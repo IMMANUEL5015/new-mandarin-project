@@ -34,7 +34,10 @@
     "jest": "^26.4.2"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.7",
+    "validator": "^13.1.17"
   },
   "jest": {
     "collectCoverageFrom": [
