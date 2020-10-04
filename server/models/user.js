@@ -17,11 +17,12 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'regular-employee',
-        enum: ['developer', 'manager', 'assistant-manager', 'delivery-agent', 'super-employee']
+        default: 'customer',
+        enum: ['developer', 'manager', 'assistant-manager', 'delivery-agent', 'super-employee', 'customer']
     },
     photo: {
-        type: String
+        type: String,
+        default: "//www.gravatar.com/avatar/a539141daad8ea89a568540c071b897c?s=200&r=pg&d=mm"
     },
     password: {
         type: String,
@@ -47,6 +48,14 @@ const userSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     }
+});
+
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 12);
+        this.confirmPassword = undefined;
+    }
+    next();
 });
 
 module.exports = User = mongoose.model('User', userSchema);
