@@ -7,3 +7,21 @@ exports.signupSuccess = (req, res, next) => {
         token: req.token
     });
 }
+
+exports.loginSuccess = (req, res, next) => {
+    return res.status(statusCodes.ok).json({
+        status: 'Success',
+        message: 'You have successfully logged into your account.',
+        token: req.token
+    });
+}
+
+exports.sendErrorResponse = (res, statusCode, msg) => {
+    if (typeof statusCode === "number") statusCode = JSON.stringify(statusCode);
+
+    let status = 'error';
+
+    if (statusCode.startsWith('4')) status = 'fail';
+
+    return res.status(statusCode).json({ status, msg });
+}

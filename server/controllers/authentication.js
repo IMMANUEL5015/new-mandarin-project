@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const statusCodes = require('../../statusCodes');
+const responses = require('../utilities/responses');
 
 exports.register = async (req, res, next) => {
     try {
@@ -14,6 +16,26 @@ exports.register = async (req, res, next) => {
         return next();
     } catch (err) {
         console.error(err.message);
-        return res.status(500).json({ status: 'error', msg: 'Internal Server Error!' });
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
+    }
+}
+
+exports.login = async (req, res, next) => {
+    try {
+        let errMsg;
+
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            errMsg = 'Please provide your email and password.';
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        const user = await User.findOne({ email }).select("+password");
+        req.user = user;
+        next();
+    } catch (err) {
+        console.error(err.message);
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
     }
 }

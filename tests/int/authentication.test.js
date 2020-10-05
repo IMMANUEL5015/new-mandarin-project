@@ -4,6 +4,8 @@ const app = require('../../server/app');
 const newUser = require('../../dev-data/user.json');
 const User = require('../../server/models/user');
 
+jest.setTimeout(30000);
+
 const baseEndpoint = "/api/v1/";
 
 beforeAll(async () => {
@@ -39,3 +41,15 @@ describe("Register new user", () => {
     });
 });
 
+describe("Login user", () => {
+    it("should return a token and a success message", async () => {
+        const res = await request(app)
+            .post(baseEndpoint + "login")
+            .send(newUser);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe("Success");
+        expect(res.body.message).toBe('You have successfully logged into your account.');
+        expect(res.body.token).toBeTruthy();
+    });
+});

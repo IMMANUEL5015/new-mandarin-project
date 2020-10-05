@@ -9,4 +9,11 @@ router.post('/register',
     responses.signupSuccess
 );
 
+router.post('/login',
+    authentication.login,
+    auth.continueTheLoginProcess,
+    auth.signToken,
+    responses.loginSuccess
+);
+
 module.exports = router;
