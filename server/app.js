@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const routes = require('./routes/routes');
 
 mongoose.connect(process.env.MONGO_URI, {
     useCreateIndex: true,
@@ -12,5 +13,9 @@ mongoose.connect(process.env.MONGO_URI, {
         console.log(err.message);
         process.exit(1);
     });
+
+app.use(express.json());
+
+app.use(routes);
 
 module.exports = app;
