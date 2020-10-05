@@ -47,6 +47,9 @@ const userSchema = mongoose.Schema({
     registeredOn: {
         type: Date,
         default: Date.now
+    },
+    passwordChangedAt: {
+        type: Date,
     }
 });
 
@@ -58,8 +61,21 @@ userSchema.pre('save', async function (next) {
     next();
 });
 
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password') && !this.isNew) this.passwordChangedAt = Date.now() - 1500;
+    next();
+});
+
 userSchema.methods.comparePasswords = async (plainPassword, encryptedPassword) => {
     return await bcrypt.compare(plainPassword, encryptedPassword);
+}
+
+userSchema.methods.passwordHasChangedSinceTokenWasIssued = function (jwtTimeStamp) {
+    if (this.passwordChangedAt) {
+        const passwordChangedAtTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return jwtTimeStamp < passwordChangedAtTimeStamp;
+    }
+    return false;
 }
 
 module.exports = User = mongoose.model('User', userSchema);
