@@ -7,7 +7,7 @@
     "test": "jest --watchAll",
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "jest --forceExit --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
