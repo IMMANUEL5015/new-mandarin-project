@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
@@ -38,4 +39,15 @@ exports.login = async (req, res, next) => {
         console.error(err.message);
         return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
     }
+}
+
+exports.logout = (req, res, next) => {
+    const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
+        expiresIn: 1
+    });
+    return res.status(statusCodes.ok).json({
+        status: "Success",
+        message: "You are now logged out of the application.",
+        token
+    });
 }

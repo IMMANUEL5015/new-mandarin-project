@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const authUtilities = require('../utilities/auth');
@@ -8,7 +9,7 @@ exports.signToken = (req, res, next) => {
         expiresIn: process.env.JWT_EXPIRES
     });
 
-    //Attach token to res object
+    //Attach token to res cookie object
 
     req.token = token;
     return next();
@@ -43,7 +44,7 @@ exports.protect = async (req, res, next) => {
             return responses.sendErrorResponse(res, statusCodes.unAuthenticated, errMsg);
         }
 
-        const decoded = await authUtilities.verifyJwt(token, process.env.JWT_SECRET);
+        const decoded = await authUtilities.verifyJwt()(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
         if (!user) return responses.sendErrorResponse(res, statusCodes.unAuthenticated, 'This user is no longer registered on our platform.');
 
@@ -54,6 +55,7 @@ exports.protect = async (req, res, next) => {
         req.user = user;
         return next();
     } catch (err) {
+        //console.error(err.message);
         return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
     }
 }

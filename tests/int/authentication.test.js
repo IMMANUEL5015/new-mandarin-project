@@ -41,6 +41,8 @@ describe("Register new user", () => {
     });
 });
 
+let token;
+
 describe("Login user", () => {
     it("should return a token and a success message", async () => {
         const res = await request(app)
@@ -50,6 +52,21 @@ describe("Login user", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.status).toBe("Success");
         expect(res.body.message).toBe('You have successfully logged into your account.');
+        expect(res.body.token).toBeTruthy();
+
+        token = res.body.token;
+    });
+});
+
+describe("Logout user", () => {
+    it("should return a success message and a token", async () => {
+        const res = await request(app)
+            .get(baseEndpoint + "logout")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe("Success");
+        expect(res.body.message).toBe("You are now logged out of the application.");
         expect(res.body.token).toBeTruthy();
     });
 });

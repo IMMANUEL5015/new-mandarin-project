@@ -16,4 +16,9 @@ router.post('/login',
     responses.loginSuccess
 );
 
+router.get('/logout',
+    auth.protect,
+    authentication.logout
+);
+
 module.exports = router;
