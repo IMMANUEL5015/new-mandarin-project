@@ -69,3 +69,15 @@ describe("Add New Product", () => {
         expect(res.body.message).toBe("You have successfully added a new product!");
     });
 });
+
+describe("See All Products", () => {
+    it("should return a success message with all the products", async () => {
+        const res = await request(app)
+            .get(baseEndpoint);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe("Success");
+        expect(Array.isArray(res.body.data)).toBeTruthy();
+        expect(res.body.data[0].name).toBe("Fried-Chicken");
+    });
+});

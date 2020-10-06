@@ -14,3 +14,16 @@ exports.addNewProduct = async (req, res, next) => {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
 }
+
+exports.seeAllProducts = async (req, res, next) => {
+    try {
+        const allProducts = await Product.find();
+        return res.status(200).json({
+            status: 'Success',
+            numOfProducts: allProducts.length,
+            data: allProducts
+        })
+    } catch (err) {
+        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
+    }
+}

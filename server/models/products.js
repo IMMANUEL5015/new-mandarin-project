@@ -18,8 +18,7 @@ const productSchema = mongoose.Schema({
         required: [true, 'Every product must have a price.']
     },
     image: {
-        type: String,
-        unique: true
+        type: String
     }
 });
 
