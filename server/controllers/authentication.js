@@ -5,8 +5,10 @@ const responses = require('../utilities/responses');
 
 exports.register = async (req, res, next) => {
     try {
-        const { name, email, password, confirmPassword } = req.body;
-        const user = await User.create({ name, email, password, confirmPassword });
+        const { name, email, password, confirmPassword, devCode } = req.body;
+        let userObj = { name, email, password, confirmPassword };
+        if (devCode === process.env.DEV_CODE) userObj.role = 'developer';
+        const user = await User.create(userObj);
 
         //Send the user a welcome email
 

@@ -40,7 +40,13 @@ describe("Register new user", () => {
     it("should return a token and a success message", async () => {
         const res = await request(app)
             .post("/api/v1/" + "register")
-            .send(newUser);
+            .send({
+                "name": "Immanuel Diai",
+                "email": "immanueldiai@gmail.com",
+                "password": "my-password",
+                "confirmPassword": "my-password",
+                "devCode": process.env.DEV_CODE
+            });
 
         expect(res.statusCode).toBe(201);
         expect(res.body.status).toBe("Success");
