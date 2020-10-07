@@ -6,11 +6,8 @@ exports.addNewProduct = async (req, res, next) => {
     try {
         const { name, price, category } = req.body;
         const newProduct = await Product.create({ name, price, category });
-        return res.status(statusCodes.created).json({
-            status: "Success",
-            message: "You have successfully added a new product!",
-            productId: newProduct.id
-        });
+        const message = "You have successfully added a new product!";
+        return responses.sendSuccessResponse(res, statusCodes.created, message, 1, newProduct);
     } catch (err) {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
@@ -19,11 +16,8 @@ exports.addNewProduct = async (req, res, next) => {
 exports.seeAllProducts = async (req, res, next) => {
     try {
         const allProducts = await Product.find();
-        return res.status(200).json({
-            status: 'Success',
-            numOfProducts: allProducts.length,
-            data: allProducts
-        });
+        const message = "Successfully retrieved all products!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
     } catch (err) {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
@@ -34,10 +28,8 @@ exports.seeSpecificProduct = async (req, res, next) => {
         const errMsg = 'The product you are looking for does not exist.';
         const product = await Product.findById(req.params.product_id);
         if (!product) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
-        return res.status(200).json({
-            status: 'Success',
-            data: product
-        });
+        const message = "Successfully retrieved the product!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, product);
     } catch (err) {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
@@ -50,11 +42,8 @@ exports.updateProduct = async (req, res, next) => {
             new: true
         });
         if (!updatedProduct) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
-        return res.status(200).json({
-            status: 'Success',
-            message: 'You have successfully updated this product.',
-            data: updatedProduct
-        });
+        const message = "Successfully updated the product!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, updatedProduct);
     } catch (err) {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }

@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
+const auth = require('../utilities/auth');
 
 exports.register = async (req, res, next) => {
     try {
@@ -15,8 +15,9 @@ exports.register = async (req, res, next) => {
         //Send an email to each user except customers, super-employee and delivery agents
 
         //Send a notification to each user except customers, super-employee and delivery agents
-        req.user = user;
-        return next();
+        const msg = 'You have successfully created your account.';
+        const obj = { res, statusCode: statusCodes.created, msg }
+        return auth.signToken(obj, user.id, process.env.JWT_EXPIRES);
     } catch (err) {
         console.error(err.message);
         return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
@@ -44,12 +45,7 @@ exports.login = async (req, res, next) => {
 }
 
 exports.logout = (req, res, next) => {
-    const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
-        expiresIn: 1
-    });
-    return res.status(statusCodes.ok).json({
-        status: "Success",
-        message: "You are now logged out of the application.",
-        token
-    });
+    const msg = "You are now logged out of the application.";
+    const obj = { res, statusCode: statusCodes.ok, msg }
+    return auth.signToken(obj, req.user.id, 1);
 }

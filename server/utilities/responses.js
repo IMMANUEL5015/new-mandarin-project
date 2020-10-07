@@ -1,19 +1,8 @@
-const statusCodes = require('../../statusCodes');
-
-exports.signupSuccess = (req, res, next) => {
-    return res.status(statusCodes.created).json({
+exports.signTokenRes = (res, statusCode, msg, token) => {
+    return res.status(statusCode).json({
         status: 'Success',
-        message: 'You have successfully created your account.',
-        token: req.token,
-        userId: req.user.id
-    });
-}
-
-exports.loginSuccess = (req, res, next) => {
-    return res.status(statusCodes.ok).json({
-        status: 'Success',
-        message: 'You have successfully logged into your account.',
-        token: req.token
+        msg,
+        token
     });
 }
 
@@ -25,4 +14,13 @@ exports.sendErrorResponse = (res, statusCode, msg) => {
     if (statusCode.startsWith('4')) status = 'fail';
 
     return res.status(statusCode).json({ status, msg });
+}
+
+exports.sendSuccessResponse = (res, statusCode, message, total, data) => {
+    return res.status(statusCode).json({
+        status: "Success",
+        message,
+        total,
+        data
+    });
 }

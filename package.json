@@ -4,10 +4,8 @@
   "description": "This project is a progressive full-stack web application for New Mandarin Restaurant, which is designed to make it easier and more efficient for customers to place food and catering orders.",
   "main": "server.js",
   "scripts": {
-    "test": "jest --watchAll",
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "coveralls": "jest --forceExit --coverage && cat ./coverage/lcov.info | coveralls"
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -29,12 +27,7 @@
     "url": "https://github.com/IMMANUEL5015/new-mandarin-project/issues"
   },
   "homepage": "https://github.com/IMMANUEL5015/new-mandarin-project#readme",
-  "devDependencies": {
-    "coveralls": "^3.1.0",
-    "jest": "^26.4.2",
-    "node-mocks-http": "^1.9.0",
-    "supertest": "^5.0.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
@@ -42,12 +35,5 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.7",
     "validator": "^13.1.17"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "**/*.js",
-      "!data/keyMap.js",
-      "!/node_modules/"
-    ]
   }
 }

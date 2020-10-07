@@ -1,19 +1,14 @@
 const router = require('express').Router();
 const authentication = require('../controllers/authentication');
 const auth = require('../middlewares/auth');
-const responses = require('../utilities/responses');
 
 router.post('/register',
-    authentication.register,
-    auth.signToken,
-    responses.signupSuccess
+    authentication.register
 );
 
 router.post('/login',
     authentication.login,
-    auth.continueTheLoginProcess,
-    auth.signToken,
-    responses.loginSuccess
+    auth.continueTheLoginProcess
 );
 
 router.get('/logout',
