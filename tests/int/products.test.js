@@ -96,3 +96,18 @@ describe("See Specific Product", () => {
         expect(res.body.data.name).toBe("Fried-Chicken");
     });
 });
+
+describe("Update Specific Product", () => {
+    it("should return a success message with the product", async () => {
+        const res = await request(app)
+            .patch(baseEndpoint + product_id)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ "name": "Goat-Meat", "price": 550 });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe("Success");
+        expect(res.body.data.name).toBe("Goat-Meat");
+        expect(res.body.data.price).toBe(550);
+        expect(res.body.message).toBe('You have successfully updated this product.');
+    });
+});

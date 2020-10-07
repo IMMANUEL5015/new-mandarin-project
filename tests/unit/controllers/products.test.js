@@ -16,6 +16,7 @@ beforeEach(() => {
 Product.create = jest.fn();
 Product.find = jest.fn();
 Product.findById = jest.fn();
+Product.findByIdAndUpdate = jest.fn();
 responses.sendErrorResponse = jest.fn();
 
 describe("products.addNewProduct", () => {
@@ -95,6 +96,40 @@ describe("products.seeSpecificProduct", () => {
         expect(res._getJSONData()).toEqual({
             status: 'Success',
             data: newProduct
+        });
+    });
+});
+
+describe("products.updateProduct", () => {
+    it("should be a function", () => {
+        expect(typeof products.updateProduct).toBe("function");
+    });
+
+    it("should call Product.findByIdAndUpdate", async () => {
+        req.params.product_id = "product_id";
+        req.body = newProduct;
+        await products.updateProduct(req, res, next);
+        expect(Product.findByIdAndUpdate).toBeCalledWith("product_id", req.body, { new: true });
+    });
+
+    it("should respond with an error if no product is found", async () => {
+        const errMsg = 'The product you want to update does not exist.';
+        req.params.product_id = "product_id";
+        Product.findByIdAndUpdate.mockReturnValueOnce(null);
+        await products.updateProduct(req, res, next);
+        expect(responses.sendErrorResponse).toBeCalledWith(res, 404, errMsg);
+    });
+
+    it("should respond with a success message, if product is updated", async () => {
+        const updatedProduct = newProduct;
+        req.params.product_id = "product_id";
+        Product.findByIdAndUpdate.mockReturnValueOnce(updatedProduct);
+        await products.updateProduct(req, res, next);
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual({
+            status: 'Success',
+            message: 'You have successfully updated this product.',
+            data: updatedProduct
         });
     });
 });

@@ -17,4 +17,10 @@ router.get('/:product_id',
     products.seeSpecificProduct
 );
 
+router.patch('/:product_id',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    products.updateProduct
+);
+
 module.exports = router;

@@ -41,3 +41,20 @@ exports.seeSpecificProduct = async (req, res, next) => {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
 }
+
+exports.updateProduct = async (req, res, next) => {
+    try {
+        const errMsg = 'The product you want to update does not exist.';
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.product_id, req.body, {
+            new: true
+        });
+        if (!updatedProduct) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+        return res.status(200).json({
+            status: 'Success',
+            message: 'You have successfully updated this product.',
+            data: updatedProduct
+        });
+    } catch (err) {
+        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
+    }
+}
