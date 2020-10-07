@@ -13,4 +13,8 @@ router.post('/',
     products.addNewProduct
 );
 
+router.get('/:product_id',
+    products.seeSpecificProduct
+);
+
 module.exports = router;

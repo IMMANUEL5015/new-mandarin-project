@@ -3,12 +3,11 @@ const request = require('supertest');
 const app = require('../../server/app');
 const newProduct = require('../../dev-data/product.json');
 const Product = require('../../server/models/products');
-const newUser = require('../../dev-data/user.json');
 const User = require('../../server/models/user');
 
 jest.setTimeout(30000);
 
-const baseEndpoint = "/api/v1/products";
+const baseEndpoint = "/api/v1/products/";
 
 beforeAll(async () => {
     try {
@@ -57,6 +56,8 @@ describe("Register new user", () => {
     });
 });
 
+let product_id;
+
 describe("Add New Product", () => {
     it("should return a success message", async () => {
         const res = await request(app)
@@ -79,5 +80,19 @@ describe("See All Products", () => {
         expect(res.body.status).toBe("Success");
         expect(Array.isArray(res.body.data)).toBeTruthy();
         expect(res.body.data[0].name).toBe("Fried-Chicken");
+
+        product_id = res.body.data.id;
+    });
+});
+
+describe("See Specific Product", () => {
+    it("should return a success message with the product", async () => {
+        const res = await request(app)
+            .get(baseEndpoint + product_id);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe("Success");
+        expect(Array.isArray(res.body.data)).toBeFalsy();
+        expect(res.body.data.name).toBe("Fried-Chicken");
     });
 });
