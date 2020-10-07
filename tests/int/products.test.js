@@ -81,7 +81,7 @@ describe("See All Products", () => {
         expect(Array.isArray(res.body.data)).toBeTruthy();
         expect(res.body.data[0].name).toBe("Fried-Chicken");
 
-        product_id = res.body.data.id;
+        product_id = res.body.data[0]._id;
     });
 });
 
