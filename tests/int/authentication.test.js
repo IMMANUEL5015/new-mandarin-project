@@ -8,20 +8,12 @@ jest.setTimeout(30000);
 
 const baseEndpoint = "/api/v1/";
 
-beforeAll(async () => {
-    try {
-        await User.deleteMany({});
-        console.log('All users deleted');
-    } catch (error) {
-        console.error(error.message);
-        process.exit(1);
-    }
-});
+let id;
 
 afterAll(async () => {
     try {
-        await User.deleteMany({});
-        console.log('All users deleted');
+        await User.findByIdAndDelete(id);
+        console.log('User deleted');
     } catch (error) {
         console.error(error.message);
         process.exit(1);
@@ -38,6 +30,8 @@ describe("Register new user", () => {
         expect(res.body.status).toBe("Success");
         expect(res.body.message).toBe('You have successfully created your account.');
         expect(res.body.token).toBeTruthy();
+
+        id = res.body.userId;
     });
 });
 

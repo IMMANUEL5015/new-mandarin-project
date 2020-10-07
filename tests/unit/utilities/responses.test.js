@@ -17,13 +17,15 @@ describe("responses.signupSuccess", () => {
     it("should return a response with a token", () => {
         const token = "this-is-a-really-long-json-web-token";
         req.token = token;
+        req.user = { id: "user_id" }
         responses.signupSuccess(req, res, next);
         expect(res._isEndCalled()).toBeTruthy();
         expect(res.statusCode).toBe(201);
         expect(res._getJSONData()).toStrictEqual({
             status: 'Success',
             message: 'You have successfully created your account.',
-            token: req.token
+            token: req.token,
+            userId: "user_id"
         });
     });
 });

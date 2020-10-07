@@ -42,10 +42,8 @@ describe("products.addNewProduct", () => {
         await products.addNewProduct(req, res, next);
         expect(res.statusCode).toBe(201);
         expect(res._isEndCalled()).toBeTruthy();
-        expect(res._getJSONData()).toEqual({
-            status: "Success",
-            message: "You have successfully added a new product!"
-        });
+        expect(res._getJSONData().status).toEqual("Success");
+        expect(res._getJSONData().message).toEqual("You have successfully added a new product!");
     });
 });
 
