@@ -23,4 +23,10 @@ router.patch('/:product_id',
     products.updateProduct
 );
 
+router.delete('/:product_id',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    products.deleteProduct
+);
+
 module.exports = router;

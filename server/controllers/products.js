@@ -58,3 +58,14 @@ exports.updateProduct = async (req, res, next) => {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
 }
+
+exports.deleteProduct = async (req, res, next) => {
+    try {
+        const errMsg = 'The product you want to delete does not exist.';
+        const deletedProduct = await Product.findByIdAndDelete(req.params.product_id);
+        if (!deletedProduct) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+        return res.status(204).json();
+    } catch (error) {
+        return responses.sendErrorResponse(res, statusCodes.server_error, error.message);
+    }
+}

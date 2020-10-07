@@ -5,5 +5,6 @@ module.exports = {
     unAuthenticated: 401,
     ok: 200,
     forbidden: 403,
-    not_found: 404
+    not_found: 404,
+    no_content: 204
 }

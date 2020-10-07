@@ -111,3 +111,13 @@ describe("Update Specific Product", () => {
         expect(res.body.message).toBe('You have successfully updated this product.');
     });
 });
+
+describe("Delete Specific Product", () => {
+    it("should return a status code of 204", async () => {
+        const res = await request(app)
+            .delete(baseEndpoint + product_id)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(204);
+    });
+});

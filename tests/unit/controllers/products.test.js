@@ -17,6 +17,8 @@ Product.create = jest.fn();
 Product.find = jest.fn();
 Product.findById = jest.fn();
 Product.findByIdAndUpdate = jest.fn();
+Product.findByIdAndDelete = jest.fn();
+
 responses.sendErrorResponse = jest.fn();
 
 describe("products.addNewProduct", () => {
@@ -131,5 +133,33 @@ describe("products.updateProduct", () => {
             message: 'You have successfully updated this product.',
             data: updatedProduct
         });
+    });
+});
+
+describe("products.deleteProduct", () => {
+    it("should be a function", () => {
+        expect(typeof products.deleteProduct).toBe("function");
+    });
+
+    it("should call Product.findByIdAndDelete", async () => {
+        req.params.product_id = "product_id";
+        await products.deleteProduct(req, res, next);
+        expect(Product.findByIdAndDelete).toBeCalledWith("product_id");
+    });
+
+    it("should respond with an error if no product is found", async () => {
+        const errMsg = 'The product you want to delete does not exist.';
+        req.params.product_id = "product_id";
+        Product.findByIdAndDelete.mockReturnValueOnce(null);
+        await products.deleteProduct(req, res, next);
+        expect(responses.sendErrorResponse).toBeCalledWith(res, 404, errMsg);
+    });
+
+    it("should respond with 204 status code.", async () => {
+        const deletedProduct = newProduct;
+        req.params.product_id = "product_id";
+        Product.findByIdAndDelete.mockReturnValueOnce(deletedProduct);
+        await products.deleteProduct(req, res, next);
+        expect(res.statusCode).toBe(204);
     });
 });
