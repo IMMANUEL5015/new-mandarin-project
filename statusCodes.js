@@ -4,5 +4,6 @@ module.exports = {
     bad_request: 400,
     unAuthenticated: 401,
     ok: 200,
-    forbidden: 403
+    forbidden: 403,
+    not_found: 404
 }

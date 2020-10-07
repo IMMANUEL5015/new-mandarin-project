@@ -22,7 +22,21 @@ exports.seeAllProducts = async (req, res, next) => {
             status: 'Success',
             numOfProducts: allProducts.length,
             data: allProducts
-        })
+        });
+    } catch (err) {
+        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
+    }
+}
+
+exports.seeSpecificProduct = async (req, res, next) => {
+    try {
+        const errMsg = 'The product you are looking for does not exist.';
+        const product = await Product.findById(req.params.product_id);
+        if (!product) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+        return res.status(200).json({
+            status: 'Success',
+            data: product
+        });
     } catch (err) {
         return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
