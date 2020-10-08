@@ -47,6 +47,8 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    /* Remember to create middleware for checking that a user has been 
+     verified before they can perform certain actions on the app. */
     registeredOn: {
         type: Date,
         default: Date.now

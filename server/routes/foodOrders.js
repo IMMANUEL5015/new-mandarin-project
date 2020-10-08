@@ -12,4 +12,10 @@ router.post('/',
     foodOrders.placeOrder
 );
 
+router.get('/',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee', 'delivery-agent'),
+    foodOrders.seeAllFoodOrders
+);
+
 module.exports = router;

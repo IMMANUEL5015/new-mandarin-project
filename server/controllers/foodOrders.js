@@ -17,3 +17,13 @@ exports.placeOrder = async (req, res, next) => {
         return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
     }
 }
+
+exports.seeAllFoodOrders = async (req, res, next) => {
+    try {
+        const allFoodOrders = await FoodOrder.find().sort('-createdAt');
+        const message = "Successfully retrieved all the food orders!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, allFoodOrders.length, allFoodOrders);
+    } catch (err) {
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
+    }
+}

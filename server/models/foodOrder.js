@@ -59,4 +59,15 @@ const foodOrderSchema = mongoose.Schema({
     }
 });
 
+foodOrderSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'name email role photo'
+    }).populate({
+        path: 'products.product',
+        select: 'name price category photo'
+    });
+    next();
+});
+
 module.exports = FoodOrder = mongoose.model('FoodOrder', foodOrderSchema);
