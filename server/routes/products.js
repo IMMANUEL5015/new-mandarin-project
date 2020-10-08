@@ -8,6 +8,10 @@ router.get('/',
     products.seeAllProducts
 );
 
+router.get('/menu',
+    products.seeProductsOnTheMenu
+);
+
 router.post('/',
     auth.protect,
     permissions('developer', 'manager', 'assistant-manager', 'super-employee'),

@@ -59,3 +59,13 @@ exports.deleteProduct = async (req, res, next) => {
         return responses.sendErrorResponse(res, statusCodes.server_error, error.message);
     }
 }
+
+exports.seeProductsOnTheMenu = async (req, res, next) => {
+    try {
+        const allProducts = await Product.find({ onTheMenuForTheDay: true });
+        const message = "Successfully retrieved all products on the menu!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
+    } catch (err) {
+        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
+    }
+}

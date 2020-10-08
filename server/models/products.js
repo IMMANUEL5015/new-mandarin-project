@@ -29,6 +29,10 @@ const productSchema = mongoose.Schema({
     },
     photoId: {
         type: String
+    },
+    onTheMenuForTheDay: {
+        type: Boolean,
+        default: false
     }
 });
 
