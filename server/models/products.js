@@ -1,4 +1,11 @@
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary');
+
+cloudinary.config({
+    cloud_name: 'immanueldiai',
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const productSchema = mongoose.Schema({
     category: {
@@ -17,9 +24,21 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: [true, 'Every product must have a price.']
     },
-    image: {
+    photo: {
+        type: String
+    },
+    photoId: {
         type: String
     }
+});
+
+productSchema.pre(/^findOneAndDelete/, async function (next) {
+    this.product = await this.findOne();
+    next();
+});
+
+productSchema.post(/^findOneAndDelete/, async function () {
+    if (this.product.photoId) await cloudinary.v2.uploader.destroy(this.product.photoId);
 });
 
 module.exports = Product = mongoose.model('Product', productSchema);

@@ -4,8 +4,8 @@ const responses = require('../utilities/responses');
 
 exports.addNewProduct = async (req, res, next) => {
     try {
-        const { name, price, category } = req.body;
-        const newProduct = await Product.create({ name, price, category });
+        const { name, price, category, photo, photoId } = req.body;
+        const newProduct = await Product.create({ name, price, category, photo, photoId });
         const message = "You have successfully added a new product!";
         return responses.sendSuccessResponse(res, statusCodes.created, message, 1, newProduct);
     } catch (err) {

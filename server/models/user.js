@@ -24,6 +24,9 @@ const userSchema = mongoose.Schema({
         type: String,
         default: "//www.gravatar.com/avatar/a539141daad8ea89a568540c071b897c?s=200&r=pg&d=mm"
     },
+    photoId:{
+        type: String
+    },
     password: {
         type: String,
         required: [true, 'Please provide a password.'],
