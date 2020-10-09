@@ -18,4 +18,9 @@ router.get('/',
     foodOrders.seeAllFoodOrders
 );
 
+router.get('/my_food_orders',
+    auth.protect,
+    foodOrders.seeMyFoodOrders
+);
+
 module.exports = router;

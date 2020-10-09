@@ -16,7 +16,7 @@ const foodOrderSchema = mongoose.Schema({
             }
         }
     ],
-    totalCost: {
+    cost: {
         type: Number
     },
     createdAt: {

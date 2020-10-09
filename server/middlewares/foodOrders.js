@@ -30,12 +30,12 @@ exports.checkIfProductsAreOnTheMenu = async (req, res, next) => {
 exports.calcTotalCost = async (req, res, next) => {
     const productsOnCart = req.productsOnCart;
     const products = req.products;
-    let totalCost = 0;
+    let cost = 0;
 
     for (i = 0; i < productsOnCart.length; i++) {
         const costOfOne = productsOnCart[i].price * products[i].quantity;
-        totalCost += costOfOne;
+        cost += costOfOne;
     }
-    req.body.totalCost = totalCost;
+    req.body.cost = cost;
     return next();
 }

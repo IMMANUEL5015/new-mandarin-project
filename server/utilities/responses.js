@@ -24,3 +24,25 @@ exports.sendSuccessResponse = (res, statusCode, message, total, data) => {
         data
     });
 }
+
+//All the food orders
+exports.foodOrdersRes = (res, statusCode, message, total, data, totalSales) => {
+    return res.status(statusCode).json({
+        status: "Success",
+        totalSales,
+        message,
+        total,
+        data
+    });
+}
+
+//My Food Orders
+exports.myfoodOrdersRes = (res, statusCode, message, total, data, totalCost) => {
+    return res.status(statusCode).json({
+        status: "Success",
+        totalCost,
+        message,
+        total,
+        data
+    });
+}
