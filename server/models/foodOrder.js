@@ -60,6 +60,10 @@ const foodOrderSchema = mongoose.Schema({
     isPending: {
         type: Boolean,
         default: true
+    },
+    transportCost: {
+        type: Number,
+        default: 200
     }
 });
 
