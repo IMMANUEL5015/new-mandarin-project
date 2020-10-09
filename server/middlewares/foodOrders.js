@@ -69,3 +69,15 @@ exports.retrievedFoodOrder = (req, res, next) => {
     const message = "Successfully retrieved the food order!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, req.foodOrder);
 }
+
+exports.checkIfFoodOrderCanBeModified = (req, res, next) => {
+    const foodOrder = req.foodOrder;
+    if
+    (foodOrder.canBeDelivered || foodOrder.paid ||
+    foodOrder.isEnRoute || foodOrder.isDelivered
+    ) {
+        const errMsg = "You cannot update or delete this food order anymore!";
+        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+    }
+    return next();
+}

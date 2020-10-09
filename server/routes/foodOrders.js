@@ -38,7 +38,17 @@ router.patch('/:food_order_id',
     foodOrdersMiddlewares.checkFoodOrderOwnership,
     foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
     foodOrdersMiddlewares.calcTotalCost,
+    foodOrdersMiddlewares.checkIfFoodOrderCanBeModified,
     foodOrders.updateFoodOrder
+);
+
+router.delete('/:food_order_id',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee', 'customer'),
+    foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.checkFoodOrderOwnership,
+    foodOrdersMiddlewares.checkIfFoodOrderCanBeModified,
+    foodOrders.deleteFoodOrder
 );
 
 module.exports = router;
