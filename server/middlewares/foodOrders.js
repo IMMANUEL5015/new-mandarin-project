@@ -81,3 +81,21 @@ exports.checkIfFoodOrderCanBeModified = (req, res, next) => {
     }
     return next();
 }
+
+exports.isPaidOrCanBeDelivered = (req, res, next) => {
+    let errMsg;
+
+    const foodOrder = req.foodOrder;
+
+    if (foodOrder.paymentOption === 'online' && foodOrder.paid === false) {
+        errMsg = 'This food order has not been paid for. Please wait for the customer to pay.';
+        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+    }
+
+    if (foodOrder.paymentOption === 'on-delivery' && foodOrder.canBeDelivered === false) {
+        errMsg = 'The customer has not certified that this food order should be delivered. Please wait!';
+        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+    }
+    req.foodOrder = foodOrder;
+    return next();
+}

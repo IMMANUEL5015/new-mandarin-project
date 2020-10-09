@@ -55,7 +55,16 @@ router.patch('/:food_order_id/enroute',
     auth.protect,
     permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
     foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.isPaidOrCanBeDelivered,
     foodOrders.enRoute
+);
+
+router.patch('/:food_order_id/delivered',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.isPaidOrCanBeDelivered,
+    foodOrders.delivered
 );
 
 module.exports = router;
