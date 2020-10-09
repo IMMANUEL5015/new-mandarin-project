@@ -122,12 +122,57 @@ exports.delivered = async (req, res, next) => {
             return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
         }
 
+        if (foodOrder.isDelivered === true) {
+            errMsg = "This food order has already been delivered to the customer.";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
         const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
-            isPending: true, paid: true, isDelivered: true
+            isPending: false, paid: true, isDelivered: true
         }, { new: true });
 
-        // Send Success Response
         const msg = "You have certified that the food order has been delivered and that the customer has paid.";
+        return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedFoodOrder);
+    } catch (error) {
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
+    }
+}
+
+exports.canBeDelivered = async (req, res, next) => {
+    try {
+        let errMsg;
+        const foodOrder = req.foodOrder;
+
+        if (!foodOrder.user.equals(req.user.id)) {
+            const msg = 'You are forbidden from performing this action!';
+            return responses.sendErrorResponse(res, statusCodes.forbidden, msg);
+        }
+
+        if (foodOrder.paymentOption === 'online') {
+            errMsg = 'You can only do this for food orders to be paid for upon delivery.';
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        if (foodOrder.isDelivered === true) {
+            errMsg = "This food order has already been delivered to you.";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        if (foodOrder.isEnRoute === true) {
+            errMsg = "Sorry. The food order is already on it's way to you.";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        if (foodOrder.canBeDelivered === true) {
+            errMsg = "You have already specified that this fod order can now be delivered to you.";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
+            canBeDelivered: true
+        }, { new: true });
+
+        const msg = "You have certified that the food order can now be delivered to you.";
         return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedFoodOrder);
     } catch (error) {
         return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });

@@ -67,4 +67,11 @@ router.patch('/:food_order_id/delivered',
     foodOrders.delivered
 );
 
+router.patch('/:food_order_id/can-be-delivered',
+    auth.protect,
+    permissions('developer', 'customer'),
+    foodOrders.seeSpecificFoodOrder,
+    foodOrders.canBeDelivered
+);
+
 module.exports = router;
