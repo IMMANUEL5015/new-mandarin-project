@@ -58,3 +58,33 @@ exports.seeSpecificFoodOrder = async (req, res, next) => {
         return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
     }
 }
+
+exports.updateFoodOrder = async (req, res, next) => {
+    const foodOrder = req.foodOrder;
+    try {
+        if
+        (foodOrder.canBeDelivered || foodOrder.paid ||
+        foodOrder.isEnRoute || foodOrder.isDelivered
+        ) {
+            const errMsg = "You cannot change the details of this food order anymore!";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        const { products, deliveryAddress, paymentOption, cost } = req.body;
+        const obj = {};
+        if (products) obj.products = products;
+        if (deliveryAddress) obj.deliveryAddress = deliveryAddress;
+        if (paymentOption) obj.paymentOption = paymentOption;
+        if (cost) obj.cost = cost;
+
+        const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, obj, {
+            new: true,
+            runValidators: true
+        });
+
+        const message = "Successfully updated the food order!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, updatedFoodOrder);
+    } catch (error) {
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
+    }
+}

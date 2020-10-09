@@ -2,41 +2,53 @@ const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const Product = require('../models/products');
 
+exports.ensureThatThereAreProducts = (req, res, next) => {
+    const products = req.body.products;
+    if (!products || products.length === 0) {
+        const msg = "You can't place an order without any product."
+        return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+    }
+    return next();
+}
+
 exports.checkIfProductsAreOnTheMenu = async (req, res, next) => {
     try {
         const msg = "You can't place an order for a product that is not on the menu."
         const products = req.body.products;
 
-        let productsOnCart = [];
-        for (i = 0; i < products.length; i++) {
-            const product = await Product.findById(products[i].product);
-            productsOnCart.push(product);
-        }
-
-        for (i = 0; i < productsOnCart.length; i++) {
-            if (!productsOnCart[i].onTheMenuForTheDay) {
-                return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+        if (products) {
+            let productsOnCart = [];
+            for (i = 0; i < products.length; i++) {
+                const product = await Product.findById(products[i].product);
+                productsOnCart.push(product);
             }
-        }
 
-        req.productsOnCart = productsOnCart;
-        req.products = products;
+            for (i = 0; i < productsOnCart.length; i++) {
+                if (!productsOnCart[i].onTheMenuForTheDay) {
+                    return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+                }
+            }
+
+            req.productsOnCart = productsOnCart;
+            req.products = products;
+        }
         return next();
     } catch (err) {
-        return responses.sendErrorResponse(res, statusCodes.server_error, err.msg);
+        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
     }
 }
 
-exports.calcTotalCost = async (req, res, next) => {
+exports.calcTotalCost = (req, res, next) => {
     const productsOnCart = req.productsOnCart;
     const products = req.products;
     let cost = 0;
-
-    for (i = 0; i < productsOnCart.length; i++) {
-        const costOfOne = productsOnCart[i].price * products[i].quantity;
-        cost += costOfOne;
+    if (productsOnCart && products) {
+        for (i = 0; i < productsOnCart.length; i++) {
+            const costOfOne = productsOnCart[i].price * products[i].quantity;
+            cost += costOfOne;
+        }
+        req.body.cost = cost;
     }
-    req.body.cost = cost;
     return next();
 }
 

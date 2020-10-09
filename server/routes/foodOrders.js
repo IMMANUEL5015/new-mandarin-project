@@ -7,6 +7,7 @@ const foodOrdersMiddlewares = require('../middlewares/foodOrders');
 router.post('/',
     auth.protect,
     permissions('customer', 'developer'),
+    foodOrdersMiddlewares.ensureThatThereAreProducts,
     foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
     foodOrdersMiddlewares.calcTotalCost,
     foodOrders.placeOrder
@@ -28,6 +29,16 @@ router.get('/:food_order_id',
     foodOrders.seeSpecificFoodOrder,
     foodOrdersMiddlewares.checkFoodOrderOwnership,
     foodOrdersMiddlewares.retrievedFoodOrder
+);
+
+router.patch('/:food_order_id',
+    auth.protect,
+    permissions('developer', 'customer'),
+    foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.checkFoodOrderOwnership,
+    foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
+    foodOrdersMiddlewares.calcTotalCost,
+    foodOrders.updateFoodOrder
 );
 
 module.exports = router;

@@ -56,6 +56,10 @@ const foodOrderSchema = mongoose.Schema({
     canBeDelivered: {
         type: Boolean,
         default: false
+    },
+    isPending: {
+        type: Boolean,
+        default: true
     }
 });
 
