@@ -88,3 +88,35 @@ exports.deleteFoodOrder = async (req, res, next) => {
         return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
     }
 }
+
+exports.enRoute = async (req, res, next) => {
+    try {
+        let errMsg;
+
+        const foodOrder = req.foodOrder;
+
+        if (foodOrder.paymentOption === 'online' && foodOrder.paid === false) {
+            errMsg = 'This food order has not been paid for. Please wait for the customer to pay.';
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        if (foodOrder.paymentOption === 'on-delivery' && foodOrder.canBeDelivered === false) {
+            errMsg = 'The customer has not certified that this food order should be delivered. Please wait!';
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        if (foodOrder.isEnRoute === true) {
+            errMsg = "This food order is already on it's way to the customer.";
+            return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        }
+
+        const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
+            isEnRoute: true
+        }, { new: true });
+
+        const msg = "The food order is now on it's way to the customer!";
+        return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedFoodOrder);
+    } catch (error) {
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
+    }
+}

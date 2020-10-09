@@ -51,4 +51,11 @@ router.delete('/:food_order_id',
     foodOrders.deleteFoodOrder
 );
 
+router.patch('/:food_order_id/enroute',
+    auth.protect,
+    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    foodOrders.seeSpecificFoodOrder,
+    foodOrders.enRoute
+);
+
 module.exports = router;

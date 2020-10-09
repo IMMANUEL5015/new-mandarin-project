@@ -1,0 +1,17 @@
+{
+    "products": [
+        {
+            "product": "5f7dbf660c3dac1c4c5256ad",
+            "quantity": 2
+        },
+        {
+            "product": "5f7dc338c6520c10f8e30b00",
+            "quantity": 1
+        },
+        {
+            "product": "5f7dc375c6520c10f8e30b02",
+            "quantity": 3
+        }
+    ],
+    "deliveryAddress": "No 161, Old Lagos Asaba Road, Agbor, Delta State, Nigeria."
+}
