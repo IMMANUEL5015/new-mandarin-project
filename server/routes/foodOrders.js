@@ -23,4 +23,11 @@ router.get('/my_food_orders',
     foodOrders.seeMyFoodOrders
 );
 
+router.get('/:food_order_id',
+    auth.protect,
+    foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.checkFoodOrderOwnership,
+    foodOrdersMiddlewares.retrievedFoodOrder
+);
+
 module.exports = router;

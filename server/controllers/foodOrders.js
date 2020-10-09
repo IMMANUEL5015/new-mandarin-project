@@ -25,7 +25,6 @@ exports.seeAllFoodOrders = async (req, res, next) => {
         const all = await FoodOrder.find().sort('-createdAt');
         const message = "Successfully retrieved all the food orders!";
 
-        //Calculate total sales
         let totalSales = foodOrders.calcTotalAmount(all);
 
         return responses.foodOrdersRes(res, statusCodes.ok, message, all.length, all, totalSales);
@@ -39,11 +38,23 @@ exports.seeMyFoodOrders = async (req, res, next) => {
         const all = await FoodOrder.find({ user: req.user.id }).sort('-createdAt');
         const message = "Successfully retrieved all your food orders!";
 
-        //Calculate total cost
         let totalCost = foodOrders.calcTotalAmount(all);
 
         return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
     } catch (err) {
         return res.status(statusCodes.server_error).json({ status: 'error', msg: err.message });
+    }
+}
+
+exports.seeSpecificFoodOrder = async (req, res, next) => {
+    try {
+        const errMsg = 'The food order you are looking for does not exist.';
+        const foodOrder = await FoodOrder.findById(req.params.food_order_id);
+
+        if (!foodOrder) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+        req.foodOrder = foodOrder;
+        return next();
+    } catch (error) {
+        return res.status(statusCodes.server_error).json({ status: 'error', msg: error.message });
     }
 }

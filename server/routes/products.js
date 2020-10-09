@@ -2,7 +2,7 @@ const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const products = require('../controllers/products');
 const permissions = require('../middlewares/permissions');
-const fileUpload = require('../utilities/fileUpload');
+const fileUpload = require('../middlewares/fileUpload');
 
 router.get('/',
     products.seeAllProducts

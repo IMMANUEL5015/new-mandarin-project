@@ -39,3 +39,21 @@ exports.calcTotalCost = async (req, res, next) => {
     req.body.cost = cost;
     return next();
 }
+
+exports.checkFoodOrderOwnership = (req, res, next) => {
+    const foodOrder = req.foodOrder;
+    if (req.user.role === "customer") {
+        if (!foodOrder.user.equals(req.user.id)) {
+            const msg = 'You are forbidden from performing this action!';
+            return responses.sendErrorResponse(res, statusCodes.forbidden, msg);
+        }
+    }
+    req.foodOrder = foodOrder;
+    return next();
+}
+
+//Specific Food Order
+exports.retrievedFoodOrder = (req, res, next) => {
+    const message = "Successfully retrieved the food order!";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, req.foodOrder);
+}
