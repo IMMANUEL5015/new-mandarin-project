@@ -16,6 +16,26 @@ class ApiFeatures {
         this.query = this.query.find(queryObj);
         return this;
     }
+
+    sort() {
+        if (this.querystring.sort) {
+            const sortBy = this.querystring.sort.split(',').join(' ');
+            this.query = this.query.sort(sortBy);
+        } else {
+            this.query = this.query.sort('-createdAt');
+        }
+        return this;
+    }
+
+    limitFields() {
+        if (this.querystring.fields) {
+            const fields = this.querystring.fields.split(',').join(' ');
+            this.query = this.query.select(fields);
+        } else {
+            this.query = this.query.select('-__v');
+        }
+        return this;
+    }
 }
 
 module.exports = ApiFeatures;

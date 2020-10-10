@@ -19,7 +19,7 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
 });
 
 exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
-    const features = new ApiFeatures(FoodOrder, req.query).filter();
+    const features = new ApiFeatures(FoodOrder, req.query).filter().sort().limitFields();
     const all = await features.query
     const message = "Successfully retrieved the food orders!";
 
@@ -30,7 +30,7 @@ exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
 
 exports.seeMyFoodOrders = catchAsync(async (req, res, next) => {
     req.query.user = req.user.id;
-    const features = new ApiFeatures(FoodOrder, req.query).filter();
+    const features = new ApiFeatures(FoodOrder, req.query).filter().sort().limitFields();
     const all = await features.query;
     const message = "Successfully retrieved your food orders!";
 

@@ -13,7 +13,7 @@ exports.addNewProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.seeAllProducts = catchAsync(async (req, res, next) => {
-    const features = new ApiFeatures(Product, req.query).filter();
+    const features = new ApiFeatures(Product, req.query).filter().sort().limitFields();
     const allProducts = await features.query;
     const message = "Successfully retrieved the products!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
@@ -46,7 +46,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
 
 exports.seeProductsOnTheMenu = catchAsync(async (req, res, next) => {
     req.query.onTheMenuForTheDay = true;
-    const features = new ApiFeatures(Product, req.query).filter();
+    const features = new ApiFeatures(Product, req.query).filter().sort().limitFields();
     const allProducts = await features.query;
     const message = "Successfully retrieved the products on the menu!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
