@@ -4,7 +4,7 @@ const responses = require('../utilities/responses');
 const foodOrders = require('../utilities/foodOrders');
 const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
-const ApiFeatures = require('../utilities/apiFeatures');
+const findMultiple = require('../utilities/findMultiple');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const msg = "You have successfully placed your order.";
@@ -19,23 +19,17 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
 });
 
 exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
-    const features = new ApiFeatures(FoodOrder, req.query).filter().sort().limitFields();
-    const all = await features.query
+    const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved the food orders!";
-
     let totalSales = foodOrders.calcTotalAmount(all);
-
     return responses.foodOrdersRes(res, statusCodes.ok, message, all.length, all, totalSales);
 });
 
 exports.seeMyFoodOrders = catchAsync(async (req, res, next) => {
     req.query.user = req.user.id;
-    const features = new ApiFeatures(FoodOrder, req.query).filter().sort().limitFields();
-    const all = await features.query;
+    const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved your food orders!";
-
     let totalCost = foodOrders.calcTotalAmount(all);
-
     return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
 });
 
