@@ -4,6 +4,7 @@ const responses = require('../utilities/responses');
 const foodOrders = require('../utilities/foodOrders');
 const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
+const ApiFeatures = require('../utilities/apiFeatures');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const msg = "You have successfully placed your order.";
@@ -18,8 +19,9 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
 });
 
 exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
-    const all = await FoodOrder.find().sort('-createdAt');
-    const message = "Successfully retrieved all the food orders!";
+    const features = new ApiFeatures(FoodOrder, req.query).filter();
+    const all = await features.query
+    const message = "Successfully retrieved the food orders!";
 
     let totalSales = foodOrders.calcTotalAmount(all);
 
@@ -27,8 +29,10 @@ exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.seeMyFoodOrders = catchAsync(async (req, res, next) => {
-    const all = await FoodOrder.find({ user: req.user.id }).sort('-createdAt');
-    const message = "Successfully retrieved all your food orders!";
+    req.query.user = req.user.id;
+    const features = new ApiFeatures(FoodOrder, req.query).filter();
+    const all = await features.query;
+    const message = "Successfully retrieved your food orders!";
 
     let totalCost = foodOrders.calcTotalAmount(all);
 

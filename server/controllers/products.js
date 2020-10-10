@@ -3,6 +3,7 @@ const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
+const ApiFeatures = require('../utilities/apiFeatures');
 
 exports.addNewProduct = catchAsync(async (req, res, next) => {
     const { name, price, category, photo, photoId } = req.body;
@@ -12,8 +13,9 @@ exports.addNewProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.seeAllProducts = catchAsync(async (req, res, next) => {
-    const allProducts = await Product.find();
-    const message = "Successfully retrieved all products!";
+    const features = new ApiFeatures(Product, req.query).filter();
+    const allProducts = await features.query;
+    const message = "Successfully retrieved the products!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
 });
 
@@ -43,7 +45,9 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
 });
 
 exports.seeProductsOnTheMenu = catchAsync(async (req, res, next) => {
-    const allProducts = await Product.find({ onTheMenuForTheDay: true });
-    const message = "Successfully retrieved all products on the menu!";
+    req.query.onTheMenuForTheDay = true;
+    const features = new ApiFeatures(Product, req.query).filter();
+    const allProducts = await features.query;
+    const message = "Successfully retrieved the products on the menu!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, allProducts.length, allProducts);
 });
