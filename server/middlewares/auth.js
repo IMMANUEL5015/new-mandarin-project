@@ -4,6 +4,7 @@ const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const auth = require('../utilities/auth');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/appError');
 
 exports.signToken = (req, res, next) => {
     const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
@@ -20,7 +21,7 @@ exports.continueTheLoginProcess = catchAsync(async (req, res, next) => {
     const user = req.user;
     if (!user || !(await user.comparePasswords(req.body.password, user.password))) {
         errMsg = "Your email or password is incorrect!";
-        return responses.sendErrorResponse(res, statusCodes.unAuthenticated, errMsg);
+        return next(new AppError(errMsg, statusCodes.unAuthenticated));
     }
 
     const msg = 'You have successfully logged into your account.';
@@ -38,15 +39,15 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     if (!token) {
         errMsg = 'You are not logged in. If you have an account, please login. If you don\'t have an account, then please sign up.';
-        return responses.sendErrorResponse(res, statusCodes.unAuthenticated, errMsg);
+        return next(new AppError(errMsg, statusCodes.unAuthenticated));
     }
 
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
-    if (!user) return responses.sendErrorResponse(res, statusCodes.unAuthenticated, 'This user is no longer registered on our platform.');
+    if (!user) return next(new AppError('This user is no longer registered on our platform.', statusCodes.unAuthenticated));
 
     if (user.passwordHasChangedSinceTokenWasIssued(decoded.iat)) {
-        return responses.sendErrorResponse(res, statusCodes.unAuthenticated, 'Your password changed recently. Please login again.');
+        return next(new AppError('Your password changed recently. Please login again.', statusCodes.unAuthenticated));
     }
 
     req.user = user;

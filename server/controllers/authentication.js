@@ -1,8 +1,8 @@
 const User = require('../models/user');
 const statusCodes = require('../../statusCodes');
-const responses = require('../utilities/responses');
 const auth = require('../utilities/auth');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/appError');
 
 exports.register = catchAsync(async (req, res, next) => {
     const { name, email, password, confirmPassword, devCode } = req.body;
@@ -27,7 +27,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
     if (!email || !password) {
         errMsg = 'Please provide your email and password.';
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const user = await User.findOne({ email }).select("+password");

@@ -3,6 +3,7 @@ const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const foodOrders = require('../utilities/foodOrders');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/appError');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const msg = "You have successfully placed your order.";
@@ -38,7 +39,7 @@ exports.seeSpecificFoodOrder = catchAsync(async (req, res, next) => {
     const errMsg = 'The food order you are looking for does not exist.';
     const foodOrder = await FoodOrder.findById(req.params.food_order_id);
 
-    if (!foodOrder) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+    if (!foodOrder) return next(new AppError(errMsg, statusCodes.not_found));
     req.foodOrder = foodOrder;
     return next();
 });
@@ -72,7 +73,7 @@ exports.enRoute = catchAsync(async (req, res, next) => {
 
     if (foodOrder.isEnRoute === true) {
         errMsg = "This food order is already on it's way to the customer.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
@@ -90,12 +91,12 @@ exports.delivered = catchAsync(async (req, res, next) => {
 
     if (foodOrder.isEnRoute === false) {
         errMsg = "This food order is not yet on it's way to the customer.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     if (foodOrder.isDelivered === true) {
         errMsg = "This food order has already been delivered to the customer.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
@@ -111,28 +112,28 @@ exports.canBeDelivered = catchAsync(async (req, res, next) => {
     const foodOrder = req.foodOrder;
 
     if (!foodOrder.user.equals(req.user.id)) {
-        const msg = 'You are forbidden from performing this action!';
-        return responses.sendErrorResponse(res, statusCodes.forbidden, msg);
+        errMsg = 'You are forbidden from performing this action!';
+        return next(new AppError(errMsg, statusCodes.forbidden));
     }
 
     if (foodOrder.paymentOption === 'online') {
         errMsg = 'You can only do this for food orders to be paid for upon delivery.';
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     if (foodOrder.isDelivered === true) {
         errMsg = "This food order has already been delivered to you.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     if (foodOrder.isEnRoute === true) {
         errMsg = "Sorry. The food order is already on it's way to you.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     if (foodOrder.canBeDelivered === true) {
         errMsg = "You have already specified that this fod order can now be delivered to you.";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {

@@ -2,12 +2,13 @@ const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const Product = require('../models/products');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/appError');
 
 exports.ensureThatThereAreProducts = (req, res, next) => {
     const products = req.body.products;
     if (!products || products.length === 0) {
         const msg = "You can't place an order without any product."
-        return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+        return next(new AppError(msg, statusCodes.bad_request));
     }
     return next();
 }
@@ -25,7 +26,7 @@ exports.checkIfProductsAreOnTheMenu = catchAsync(async (req, res, next) => {
 
         for (i = 0; i < productsOnCart.length; i++) {
             if (!productsOnCart[i].onTheMenuForTheDay) {
-                return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+                return next(new AppError(msg, statusCodes.bad_request));
             }
         }
 
@@ -55,7 +56,7 @@ exports.checkFoodOrderOwnership = (req, res, next) => {
     if (req.user.role === "customer") {
         if (!foodOrder.user.equals(req.user.id)) {
             const msg = 'You are forbidden from performing this action!';
-            return responses.sendErrorResponse(res, statusCodes.forbidden, msg);
+            return next(new AppError(msg, statusCodes.forbidden));
         }
     }
     req.foodOrder = foodOrder;
@@ -75,7 +76,7 @@ exports.checkIfFoodOrderCanBeModified = (req, res, next) => {
     foodOrder.isEnRoute || foodOrder.isDelivered
     ) {
         const errMsg = "You cannot update or delete this food order anymore!";
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
     return next();
 }
@@ -87,12 +88,12 @@ exports.isPaidOrCanBeDelivered = (req, res, next) => {
 
     if (foodOrder.paymentOption === 'online' && foodOrder.paid === false) {
         errMsg = 'This food order has not been paid for. Please wait for the customer to pay.';
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     if (foodOrder.paymentOption === 'on-delivery' && foodOrder.canBeDelivered === false) {
         errMsg = 'The customer has not certified that this food order should be delivered. Please wait!';
-        return responses.sendErrorResponse(res, statusCodes.bad_request, errMsg);
+        return next(new AppError(errMsg, statusCodes.bad_request));
     }
     req.foodOrder = foodOrder;
     return next();

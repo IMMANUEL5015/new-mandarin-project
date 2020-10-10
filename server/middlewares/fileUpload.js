@@ -4,6 +4,7 @@ const cloudinary = require('cloudinary');
 const Product = require('../models/products');
 const responses = require('../utilities/responses');
 const catchAsync = require('../utilities/catchAsync');
+const AppError = require('../utilities/appError');
 
 cloudinary.config({
     cloud_name: 'immanueldiai',
@@ -22,7 +23,7 @@ const multerFilter = (req, file, cb) => {
         cb(null, true);
     } else {
         //Use App Error and the global Error Handler Later on
-        cb(new Error('Only Image Files are Allowed!'), false);
+        cb(new AppError('Only Image Files are Allowed!', 400), false);
     }
 }
 
@@ -46,7 +47,7 @@ exports.resizePhotoForProductCreate = catchAsync(async (req, res, next) => {
 exports.resizePhotoForProductUpdate = catchAsync(async (req, res, next) => {
     const errMsg = 'The product you want to update does not exist.';
     const product = await Product.findById(req.params.product_id);
-    if (!product) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+    if (!product) return next(new AppError(errMsg, statusCodes.not_found));
 
     if (!req.file) return next();
 

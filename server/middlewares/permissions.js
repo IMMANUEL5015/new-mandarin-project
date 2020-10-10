@@ -1,10 +1,10 @@
-const responses = require('../utilities/responses');
 const statusCodes = require('../../statusCodes');
+const AppError = require('../utilities/appError');
 
 module.exports = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
-            return responses.sendErrorResponse(res, statusCodes.forbidden, "You are forbidden from performing this action!");
+            return next(new AppError("You are forbidden from performing this action!", statusCodes.forbidden));
         }
         return next();
     }
