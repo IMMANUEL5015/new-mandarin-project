@@ -78,4 +78,14 @@ foodOrderSchema.pre(/^find/, function (next) {
     next();
 });
 
+foodOrderSchema.pre(/^findOneAndUpdate/, async function (next) {
+    this.foodOrder = await this.findOne();
+    next();
+});
+
+foodOrderSchema.post(/^findOneAndUpdate/, async function () {
+    this.foodOrder.updatedAt = Date.now();
+    await this.foodOrder.save();
+});
+
 module.exports = FoodOrder = mongoose.model('FoodOrder', foodOrderSchema);
