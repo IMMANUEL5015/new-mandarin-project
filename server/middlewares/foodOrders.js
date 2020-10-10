@@ -1,6 +1,7 @@
 const statusCodes = require('../../statusCodes');
 const responses = require('../utilities/responses');
 const Product = require('../models/products');
+const catchAsync = require('../utilities/catchAsync');
 
 exports.ensureThatThereAreProducts = (req, res, next) => {
     const products = req.body.products;
@@ -11,32 +12,28 @@ exports.ensureThatThereAreProducts = (req, res, next) => {
     return next();
 }
 
-exports.checkIfProductsAreOnTheMenu = async (req, res, next) => {
-    try {
-        const msg = "You can't place an order for a product that is not on the menu."
-        const products = req.body.products;
+exports.checkIfProductsAreOnTheMenu = catchAsync(async (req, res, next) => {
+    const msg = "You can't place an order for a product that is not on the menu."
+    const products = req.body.products;
 
-        if (products) {
-            let productsOnCart = [];
-            for (i = 0; i < products.length; i++) {
-                const product = await Product.findById(products[i].product);
-                productsOnCart.push(product);
-            }
-
-            for (i = 0; i < productsOnCart.length; i++) {
-                if (!productsOnCart[i].onTheMenuForTheDay) {
-                    return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
-                }
-            }
-
-            req.productsOnCart = productsOnCart;
-            req.products = products;
+    if (products) {
+        let productsOnCart = [];
+        for (i = 0; i < products.length; i++) {
+            const product = await Product.findById(products[i].product);
+            productsOnCart.push(product);
         }
-        return next();
-    } catch (err) {
-        return responses.sendErrorResponse(res, statusCodes.server_error, err.message);
+
+        for (i = 0; i < productsOnCart.length; i++) {
+            if (!productsOnCart[i].onTheMenuForTheDay) {
+                return responses.sendErrorResponse(res, statusCodes.bad_request, msg);
+            }
+        }
+
+        req.productsOnCart = productsOnCart;
+        req.products = products;
     }
-}
+    return next();
+});
 
 exports.calcTotalCost = (req, res, next) => {
     const transportCost = 200;

@@ -3,6 +3,7 @@ const statusCodes = require('../../statusCodes');
 const cloudinary = require('cloudinary');
 const Product = require('../models/products');
 const responses = require('../utilities/responses');
+const catchAsync = require('../utilities/catchAsync');
 
 cloudinary.config({
     cloud_name: 'immanueldiai',
@@ -33,34 +34,26 @@ const upload = multer({
 
 exports.uploadPhoto = upload.single('photo');
 
-exports.resizePhotoForProductCreate = async (req, res, next) => {
-    try {
-        if (!req.file) return next();
+exports.resizePhotoForProductCreate = catchAsync(async (req, res, next) => {
+    if (!req.file) return next();
 
-        const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });
-        req.body.photo = result.secure_url;
-        req.body.photoId = result.public_id;
-        return next();
-    } catch (error) {
-        return res.status(statusCodes.server_error).json({ status: 'Success', message: error.message });
-    }
-}
+    const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });
+    req.body.photo = result.secure_url;
+    req.body.photoId = result.public_id;
+    return next();
+});
 
-exports.resizePhotoForProductUpdate = async (req, res, next) => {
-    try {
-        const errMsg = 'The product you want to update does not exist.';
-        const product = await Product.findById(req.params.product_id);
-        if (!product) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
+exports.resizePhotoForProductUpdate = catchAsync(async (req, res, next) => {
+    const errMsg = 'The product you want to update does not exist.';
+    const product = await Product.findById(req.params.product_id);
+    if (!product) return responses.sendErrorResponse(res, statusCodes.not_found, errMsg);
 
-        if (!req.file) return next();
+    if (!req.file) return next();
 
-        if (product.photoId) await cloudinary.v2.uploader.destroy(product.photoId);
+    if (product.photoId) await cloudinary.v2.uploader.destroy(product.photoId);
 
-        const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });
-        req.body.photo = result.secure_url;
-        req.body.photoId = result.public_id;
-        return next();
-    } catch (error) {
-        return res.status(statusCodes.server_error).json({ status: 'Success', message: error.message });
-    }
-}
+    const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });
+    req.body.photo = result.secure_url;
+    req.body.photoId = result.public_id;
+    return next();
+});
