@@ -8,11 +8,7 @@ mongoose.connect(process.env.MONGO_URI, {
     useFindAndModify: false,
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(res => console.log(`Successfully connected to database!`))
-    .catch(err => {
-        console.log(err.message);
-        process.exit(1);
-    });
+}).then(res => console.log(`Successfully connected to database!`));
 
 app.use(express.json());
 
