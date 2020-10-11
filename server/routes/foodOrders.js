@@ -6,7 +6,7 @@ const foodOrdersMiddlewares = require('../middlewares/foodOrders');
 
 router.post('/',
     auth.protect,
-    permissions('customer', 'developer'),
+    permissions.checkRole('customer', 'developer'),
     foodOrdersMiddlewares.ensureThatThereAreProducts,
     foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
     foodOrdersMiddlewares.calcTotalCost,
@@ -15,7 +15,7 @@ router.post('/',
 
 router.get('/',
     auth.protect,
-    permissions('developer', 'manager', 'assistant-manager', 'super-employee', 'delivery-agent'),
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee', 'delivery-agent'),
     foodOrders.seeAllFoodOrders
 );
 
@@ -33,7 +33,7 @@ router.get('/:food_order_id',
 
 router.patch('/:food_order_id',
     auth.protect,
-    permissions('developer', 'customer'),
+    permissions.checkRole('developer', 'customer'),
     foodOrders.seeSpecificFoodOrder,
     foodOrdersMiddlewares.checkFoodOrderOwnership,
     foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
@@ -44,7 +44,7 @@ router.patch('/:food_order_id',
 
 router.delete('/:food_order_id',
     auth.protect,
-    permissions('developer', 'manager', 'assistant-manager', 'super-employee', 'customer'),
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee', 'customer'),
     foodOrders.seeSpecificFoodOrder,
     foodOrdersMiddlewares.checkFoodOrderOwnership,
     foodOrdersMiddlewares.checkIfFoodOrderCanBeModified,
@@ -53,7 +53,7 @@ router.delete('/:food_order_id',
 
 router.patch('/:food_order_id/enroute',
     auth.protect,
-    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
     foodOrders.seeSpecificFoodOrder,
     foodOrdersMiddlewares.isPaidOrCanBeDelivered,
     foodOrders.enRoute
@@ -61,7 +61,7 @@ router.patch('/:food_order_id/enroute',
 
 router.patch('/:food_order_id/delivered',
     auth.protect,
-    permissions('developer', 'manager', 'assistant-manager', 'super-employee'),
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
     foodOrders.seeSpecificFoodOrder,
     foodOrdersMiddlewares.isPaidOrCanBeDelivered,
     foodOrders.delivered
@@ -69,7 +69,7 @@ router.patch('/:food_order_id/delivered',
 
 router.patch('/:food_order_id/can-be-delivered',
     auth.protect,
-    permissions('developer', 'customer'),
+    permissions.checkRole('developer', 'customer'),
     foodOrders.seeSpecificFoodOrder,
     foodOrders.canBeDelivered
 );

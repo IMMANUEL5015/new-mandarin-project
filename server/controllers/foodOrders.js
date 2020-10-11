@@ -141,3 +141,11 @@ exports.canBeDelivered = catchAsync(async (req, res, next) => {
     const msg = "You have certified that the food order can now be delivered to you.";
     return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedFoodOrder);
 });
+
+exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
+    req.query.user = req.params.id;
+    const all = await findMultiple(FoodOrder, req.query);
+    const message = "Successfully retrieved the food orders!";
+    let totalCost = foodOrders.calcTotalAmount(all);
+    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
+});
