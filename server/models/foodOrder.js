@@ -64,6 +64,10 @@ const foodOrderSchema = mongoose.Schema({
     transportCost: {
         type: Number,
         default: 200
+    },
+    deliveryAgent: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 
@@ -74,6 +78,9 @@ foodOrderSchema.pre(/^find/, function (next) {
     }).populate({
         path: 'products.product',
         select: 'name price category photo'
+    }).populate({
+        path: 'deliveryAgent',
+        select: 'name email role photo'
     });
     next();
 });

@@ -5,6 +5,7 @@ const foodOrders = require('../utilities/foodOrders');
 const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
 const findMultiple = require('../utilities/findMultiple');
+const User = require('../models/user');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const msg = "You have successfully placed your order.";
@@ -74,11 +75,28 @@ exports.enRoute = catchAsync(async (req, res, next) => {
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
+    if (!req.body.deliveryAgent) {
+        errMsg = "You need to assign a delivery agent to this food order.";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+
+    const user = await User.findById(req.body.deliveryAgent);
+    if (!user) {
+        errMsg = "The delivery agent you want to assign to this food order does not exist.";
+        return next(new AppError(errMsg, statusCodes.not_found));
+    }
+
+    if (!(user.role === 'delivery-agent')) {
+        errMsg = "The user you want to assign to this food order is not a delivery agent.";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
-        isEnRoute: true
+        isEnRoute: true,
+        deliveryAgent: req.body.deliveryAgent
     }, { new: true });
 
-    const msg = "The food order is now on it's way to the customer!";
+    const msg = "You have successfully assigned a delivery agent to this food order.";
     return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedFoodOrder);
 });
 
@@ -148,4 +166,8 @@ exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
     const message = "Successfully retrieved the food orders!";
     let totalCost = foodOrders.calcTotalAmount(all);
     return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
+});
+
+exports.getDeliveryAgentsFoodOrders = catchAsync(async (req, res, next) => {
+
 });
