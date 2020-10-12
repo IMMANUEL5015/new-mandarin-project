@@ -3,11 +3,12 @@ const auth = require('../middlewares/auth');
 const foodOrders = require('../controllers/foodOrders');
 const permissions = require('../middlewares/permissions');
 const foodOrdersMiddlewares = require('../middlewares/foodOrders');
+const orders = require('../middlewares/orders');
 
 router.post('/',
     auth.protect,
     permissions.checkRole('customer', 'developer'),
-    foodOrdersMiddlewares.ensureThatThereAreProducts,
+    orders.ensureThatThereAreProducts,
     foodOrdersMiddlewares.checkIfProductsAreOnTheMenu,
     foodOrdersMiddlewares.calcTotalCost,
     foodOrders.placeOrder

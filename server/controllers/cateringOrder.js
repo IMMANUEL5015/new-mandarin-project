@@ -2,6 +2,8 @@ const CateringOrder = require('../models/cateringOrder');
 const catchAsync = require('../utilities/catchAsync');
 const responses = require('../utilities/responses');
 const statusCodes = require('../../statusCodes');
+const findMultiple = require('../utilities/findMultiple');
+const orders = require('../utilities/orders');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const cateringOrder = await CateringOrder.create({
@@ -18,4 +20,11 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
     const msgCompleted = "You have successfully placed your catering order.";
     const message = msgCompleted + " " + "One of our staff will get in touch with you soon.";
     return responses.sendSuccessResponse(res, statusCodes.created, message, 1, cateringOrder);
+});
+
+exports.seeAllCateringOrders = catchAsync(async (req, res, next) => {
+    const all = await findMultiple(CateringOrder, req.query);
+    const message = "Successfully retrieved the catering orders!";
+    let totalSales = orders.calcTotalAmount(all);
+    return responses.ordersRes(res, statusCodes.ok, message, all.length, all, totalSales);
 });

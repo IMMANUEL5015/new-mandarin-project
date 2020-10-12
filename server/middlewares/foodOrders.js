@@ -4,15 +4,6 @@ const Product = require('../models/products');
 const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
 
-exports.ensureThatThereAreProducts = (req, res, next) => {
-    const products = req.body.products;
-    if (!products || products.length === 0) {
-        const msg = "You can't place an order without any product."
-        return next(new AppError(msg, statusCodes.bad_request));
-    }
-    return next();
-}
-
 exports.checkIfProductsAreOnTheMenu = catchAsync(async (req, res, next) => {
     const msg = "You can't place an order for a product that is not on the menu."
     const products = req.body.products;

@@ -15,8 +15,8 @@ exports.sendSuccessResponse = (res, statusCode, message, total, data) => {
     });
 }
 
-//All the food orders
-exports.foodOrdersRes = (res, statusCode, message, total, data, totalSales) => {
+//All the food orders and catering orders
+exports.ordersRes = (res, statusCode, message, total, data, totalSales) => {
     return res.status(statusCode).json({
         status: "Success",
         totalSales,
@@ -26,8 +26,8 @@ exports.foodOrdersRes = (res, statusCode, message, total, data, totalSales) => {
     });
 }
 
-//My Food Orders
-exports.myfoodOrdersRes = (res, statusCode, message, total, data, totalExpenditure) => {
+//My Food Orders and Catering Orders
+exports.myOrdersRes = (res, statusCode, message, total, data, totalExpenditure) => {
     return res.status(statusCode).json({
         status: "Success",
         totalExpenditure,

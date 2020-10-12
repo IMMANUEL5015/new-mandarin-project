@@ -80,10 +80,24 @@ const cateringOrderSchema = mongoose.Schema({
         type: Number,
         default: process.env.SERVING_COST
     },
-    cateringOrderHandler: {
+    handler: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }
+});
+
+cateringOrderSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'name email role photo'
+    }).populate({
+        path: 'products.product',
+        select: 'name price category photo'
+    }).populate({
+        path: 'handler',
+        select: 'name email role photo'
+    });
+    next();
 });
 
 cateringOrderSchema.pre(/^findOneAndUpdate/, async function (next) {
