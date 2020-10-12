@@ -63,7 +63,7 @@ const foodOrderSchema = mongoose.Schema({
     },
     transportCost: {
         type: Number,
-        default: 200
+        default: process.env.FOOD_ORDER_TRANSPORT_COST
     },
     deliveryAgent: {
         type: mongoose.Schema.Types.ObjectId,

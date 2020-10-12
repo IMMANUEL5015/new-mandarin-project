@@ -37,7 +37,7 @@ exports.checkIfProductsAreOnTheMenu = catchAsync(async (req, res, next) => {
 });
 
 exports.calcTotalCost = (req, res, next) => {
-    const transportCost = 200;
+    const transportCost = process.env.FOOD_ORDER_TRANSPORT_COST;
     const productsOnCart = req.productsOnCart;
     const products = req.products;
     let cost = 0;
@@ -46,7 +46,7 @@ exports.calcTotalCost = (req, res, next) => {
             const costOfOne = productsOnCart[i].price * products[i].quantity;
             cost += costOfOne;
         }
-        req.body.cost = cost + transportCost;
+        req.body.cost = cost + parseInt(transportCost);
     }
     return next();
 }

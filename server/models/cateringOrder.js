@@ -27,7 +27,7 @@ const cateringOrderSchema = mongoose.Schema({
         type: Date,
         required: [true, 'Please give us the date of the occasion.']
     },
-    order: [
+    products: [
         {
             product: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -71,6 +71,18 @@ const cateringOrderSchema = mongoose.Schema({
     isPending: {
         type: String,
         default: "true"
+    },
+    transportCost: {
+        type: Number,
+        default: process.env.CATERING_ORDER_TRANSPORT_COST
+    },
+    servingCost: {
+        type: Number,
+        default: process.env.SERVING_COST
+    },
+    cateringOrderHandler: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 });
 
