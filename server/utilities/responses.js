@@ -27,10 +27,20 @@ exports.foodOrdersRes = (res, statusCode, message, total, data, totalSales) => {
 }
 
 //My Food Orders
-exports.myfoodOrdersRes = (res, statusCode, message, total, data, totalCost) => {
+exports.myfoodOrdersRes = (res, statusCode, message, total, data, totalExpenditure) => {
     return res.status(statusCode).json({
         status: "Success",
-        totalCost,
+        totalExpenditure,
+        message,
+        total,
+        data
+    });
+}
+
+exports.deliveryfoodOrdersRes = (res, statusCode, message, total, data, totalDeliveriesSales) => {
+    return res.status(statusCode).json({
+        status: "Success",
+        totalDeliveriesSales,
         message,
         total,
         data

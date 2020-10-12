@@ -30,8 +30,8 @@ exports.seeMyFoodOrders = catchAsync(async (req, res, next) => {
     req.query.user = req.user.id;
     const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved your food orders!";
-    let totalCost = foodOrders.calcTotalAmount(all);
-    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
+    let totalExpenditure = foodOrders.calcTotalAmount(all);
+    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
 });
 
 exports.seeSpecificFoodOrder = catchAsync(async (req, res, next) => {
@@ -164,14 +164,14 @@ exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
     req.query.user = req.params.id;
     const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved the food orders!";
-    let totalCost = foodOrders.calcTotalAmount(all);
-    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
+    let totalExpenditure = foodOrders.calcTotalAmount(all);
+    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
 });
 
 exports.getDeliveryAgentFoodOrders = catchAsync(async (req, res, next) => {
     req.query.deliveryAgent = req.user.id;
     const all = await findMultiple(FoodOrder, req.query);
-    const message = "Successfully retrieved the food orders whose delivery you need to handle!";
-    let totalCost = foodOrders.calcTotalAmount(all);
-    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
+    const msg = "Successfully retrieved the food orders whose delivery you need to handle!";
+    let totalDeliveriesSales = foodOrders.calcTotalAmount(all);
+    return responses.deliveryfoodOrdersRes(res, statusCodes.ok, msg, all.length, all, totalDeliveriesSales);
 });
