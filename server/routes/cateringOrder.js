@@ -25,4 +25,11 @@ router.get('/my_catering_orders',
     cateringOrder.seeMyCateringOrders
 );
 
+router.get('/:catering_order_id',
+    auth.protect,
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderOwnership,
+    cateringOrdersMiddlewares.retrievedCateringOrder
+);
+
 module.exports = router;

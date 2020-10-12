@@ -4,6 +4,7 @@ const responses = require('../utilities/responses');
 const statusCodes = require('../../statusCodes');
 const findMultiple = require('../utilities/findMultiple');
 const orders = require('../utilities/orders');
+const AppError = require('../utilities/appError');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const cateringOrder = await CateringOrder.create({
@@ -35,4 +36,13 @@ exports.seeMyCateringOrders = catchAsync(async (req, res, next) => {
     const message = "Successfully retrieved your catering orders!";
     let totalExpenditure = orders.calcTotalAmount(all);
     return responses.myOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
+});
+
+exports.specificCateringOrder = catchAsync(async (req, res, next) => {
+    const errMsg = 'The catering order you are looking for does not exist.';
+    const cateringOrder = await CateringOrder.findById(req.params.catering_order_id);
+
+    if (!cateringOrder) return next(new AppError(errMsg, statusCodes.not_found));
+    req.cateringOrder = cateringOrder;
+    return next();
 });
