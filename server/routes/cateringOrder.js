@@ -20,4 +20,9 @@ router.get('/',
     cateringOrder.seeAllCateringOrders
 );
 
+router.get('/my_catering_orders',
+    auth.protect,
+    cateringOrder.seeMyCateringOrders
+);
+
 module.exports = router;

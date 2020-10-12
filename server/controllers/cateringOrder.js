@@ -28,3 +28,11 @@ exports.seeAllCateringOrders = catchAsync(async (req, res, next) => {
     let totalSales = orders.calcTotalAmount(all);
     return responses.ordersRes(res, statusCodes.ok, message, all.length, all, totalSales);
 });
+
+exports.seeMyCateringOrders = catchAsync(async (req, res, next) => {
+    req.query.user = req.user.id;
+    const all = await findMultiple(CateringOrder, req.query);
+    const message = "Successfully retrieved your catering orders!";
+    let totalExpenditure = orders.calcTotalAmount(all);
+    return responses.myOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
+});
