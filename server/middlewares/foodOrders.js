@@ -80,8 +80,8 @@ exports.retrievedFoodOrder = (req, res, next) => {
 exports.checkIfFoodOrderCanBeModified = (req, res, next) => {
     const foodOrder = req.foodOrder;
     if
-    (foodOrder.canBeDelivered || foodOrder.paid ||
-    foodOrder.isEnRoute || foodOrder.isDelivered
+    (foodOrder.canBeDelivered === "true" || foodOrder.paid === "true" ||
+    foodOrder.isEnRoute === "true" || foodOrder.isDelivered === "true"
     ) {
         const errMsg = "You cannot update or delete this food order anymore!";
         return next(new AppError(errMsg, statusCodes.bad_request));
@@ -94,12 +94,12 @@ exports.isPaidOrCanBeDelivered = (req, res, next) => {
 
     const foodOrder = req.foodOrder;
 
-    if (foodOrder.paymentOption === 'online' && foodOrder.paid === false) {
+    if (foodOrder.paymentOption === 'online' && foodOrder.paid === "false") {
         errMsg = 'This food order has not been paid for. Please wait for the customer to pay.';
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
-    if (foodOrder.paymentOption === 'on-delivery' && foodOrder.canBeDelivered === false) {
+    if (foodOrder.paymentOption === 'on-delivery' && foodOrder.canBeDelivered === "false") {
         errMsg = 'The customer has not certified that this food order should be delivered. Please wait!';
         return next(new AppError(errMsg, statusCodes.bad_request));
     }

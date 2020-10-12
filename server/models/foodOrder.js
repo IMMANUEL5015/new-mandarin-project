@@ -37,16 +37,16 @@ const foodOrderSchema = mongoose.Schema({
         }
     },
     isEnRoute: {
-        type: Boolean,
+        type: String,
         default: false
     },
     paid: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "false"
     },
     isDelivered: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "false"
     },
     paymentOption: {
         type: String,
@@ -54,12 +54,12 @@ const foodOrderSchema = mongoose.Schema({
         default: 'online'
     },
     canBeDelivered: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "false"
     },
     isPending: {
-        type: Boolean,
-        default: true
+        type: String,
+        default: "true"
     },
     transportCost: {
         type: Number,

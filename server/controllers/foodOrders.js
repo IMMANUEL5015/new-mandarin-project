@@ -70,7 +70,7 @@ exports.enRoute = catchAsync(async (req, res, next) => {
 
     const foodOrder = req.foodOrder;
 
-    if (foodOrder.isEnRoute === true) {
+    if (foodOrder.isEnRoute === "true") {
         errMsg = "This food order is already on it's way to the customer.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
@@ -99,7 +99,7 @@ exports.enRoute = catchAsync(async (req, res, next) => {
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
-        isEnRoute: true,
+        isEnRoute: "true",
         deliveryAgent: req.body.deliveryAgent
     }, { new: true });
 
@@ -112,18 +112,18 @@ exports.delivered = catchAsync(async (req, res, next) => {
 
     const foodOrder = req.foodOrder;
 
-    if (foodOrder.isEnRoute === false) {
+    if (foodOrder.isEnRoute === "false") {
         errMsg = "This food order is not yet on it's way to the customer.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
-    if (foodOrder.isDelivered === true) {
+    if (foodOrder.isDelivered === "true") {
         errMsg = "This food order has already been delivered to the customer.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
-        isPending: false, paid: true, isDelivered: true
+        isPending: "false", paid: "true", isDelivered: "true"
     }, { new: true });
 
     const msg = "You have certified that the food order has been delivered and that the customer has paid.";
@@ -144,23 +144,23 @@ exports.canBeDelivered = catchAsync(async (req, res, next) => {
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
-    if (foodOrder.isDelivered === true) {
+    if (foodOrder.isDelivered === "true") {
         errMsg = "This food order has already been delivered to you.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
-    if (foodOrder.isEnRoute === true) {
+    if (foodOrder.isEnRoute === "true") {
         errMsg = "Sorry. The food order is already on it's way to you.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
-    if (foodOrder.canBeDelivered === true) {
+    if (foodOrder.canBeDelivered === "true") {
         errMsg = "You have already specified that this fod order can now be delivered to you.";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
-        canBeDelivered: true
+        canBeDelivered: "true"
     }, { new: true });
 
     const msg = "You have certified that the food order can now be delivered to you.";
