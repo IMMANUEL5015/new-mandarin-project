@@ -55,6 +55,11 @@ const userSchema = mongoose.Schema({
     },
     passwordChangedAt: {
         type: Date,
+    },
+    status: {
+        type: String,
+        enum: ['available', 'unavailable'],
+        default: 'available'
     }
 });
 

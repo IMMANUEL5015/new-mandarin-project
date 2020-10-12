@@ -22,4 +22,16 @@ router.get('/:id/food-orders',
     foodOrders.getCustomerFoodOrders
 );
 
+router.patch('/available',
+    auth.protect,
+    permissions.checkRole('delivery-agent'),
+    users.available
+);
+
+router.patch('/unavailable',
+    auth.protect,
+    permissions.checkRole('delivery-agent'),
+    users.unAvailable
+);
+
 module.exports = router;

@@ -18,3 +18,19 @@ exports.getSpecificUser = catchAsync(async (req, res, next) => {
     const message = "Successfully retrieved the details!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
 });
+
+exports.available = catchAsync(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.user.id, { status: 'available' }, {
+        new: true
+    });
+    const message = 'You are available to be assigned to food deliveries.'
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
+});
+
+exports.unAvailable = catchAsync(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.user.id, { status: 'unavailable' }, {
+        new: true
+    });
+    const message = 'You are unavailable to be assigned to food deliveries.'
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
+});

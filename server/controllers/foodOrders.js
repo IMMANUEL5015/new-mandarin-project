@@ -91,6 +91,13 @@ exports.enRoute = catchAsync(async (req, res, next) => {
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
 
+    if (user.status === 'unavailable') {
+        const stringOne = "The user you want to assign to this food order is currently not unavailable.";
+        const stringTwo = "Please assign another delivery agent or wait for this agent to become available.";
+        errMsg = `${stringOne} ${stringTwo}`;
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+
     const updatedFoodOrder = await FoodOrder.findByIdAndUpdate(req.params.food_order_id, {
         isEnRoute: true,
         deliveryAgent: req.body.deliveryAgent
