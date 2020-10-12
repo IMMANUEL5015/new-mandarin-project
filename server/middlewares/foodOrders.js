@@ -59,6 +59,14 @@ exports.checkFoodOrderOwnership = (req, res, next) => {
             return next(new AppError(msg, statusCodes.forbidden));
         }
     }
+
+    if (req.user.role === "delivery-agent") {
+        if (!foodOrder.deliveryAgent.equals(req.user.id)) {
+            const msg = 'You are forbidden from performing this action!';
+            return next(new AppError(msg, statusCodes.forbidden));
+        }
+    }
+
     req.foodOrder = foodOrder;
     return next();
 }

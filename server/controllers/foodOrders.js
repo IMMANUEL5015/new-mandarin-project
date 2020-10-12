@@ -168,6 +168,10 @@ exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
     return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
 });
 
-exports.getDeliveryAgentsFoodOrders = catchAsync(async (req, res, next) => {
-
+exports.getDeliveryAgentFoodOrders = catchAsync(async (req, res, next) => {
+    req.query.deliveryAgent = req.user.id;
+    const all = await findMultiple(FoodOrder, req.query);
+    const message = "Successfully retrieved the food orders whose delivery you need to handle!";
+    let totalCost = foodOrders.calcTotalAmount(all);
+    return responses.myfoodOrdersRes(res, statusCodes.ok, message, all.length, all, totalCost);
 });

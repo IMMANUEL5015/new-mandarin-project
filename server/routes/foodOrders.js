@@ -15,7 +15,7 @@ router.post('/',
 
 router.get('/',
     auth.protect,
-    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee', 'delivery-agent'),
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
     foodOrders.seeAllFoodOrders
 );
 
@@ -72,6 +72,12 @@ router.patch('/:food_order_id/can-be-delivered',
     permissions.checkRole('developer', 'customer'),
     foodOrders.seeSpecificFoodOrder,
     foodOrders.canBeDelivered
+);
+
+router.get('/delivery-agent/my-food-orders',
+    auth.protect,
+    permissions.checkRole('delivery-agent'),
+    foodOrders.getDeliveryAgentFoodOrders
 );
 
 module.exports = router;
