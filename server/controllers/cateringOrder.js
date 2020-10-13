@@ -8,7 +8,7 @@ const AppError = require('../utilities/appError');
 
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const cateringOrder = await CateringOrder.create({
-        user: req.user.id,
+        customer: req.user.id,
         occasion: req.body.occasion,
         description: req.body.description,
         location: req.body.location,
@@ -31,7 +31,7 @@ exports.seeAllCateringOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.seeMyCateringOrders = catchAsync(async (req, res, next) => {
-    req.query.user = req.user.id;
+    req.query.customer = req.user.id;
     const all = await findMultiple(CateringOrder, req.query);
     const message = "Successfully retrieved your catering orders!";
     let totalExpenditure = orders.calcTotalAmount(all);
@@ -45,4 +45,26 @@ exports.specificCateringOrder = catchAsync(async (req, res, next) => {
     if (!cateringOrder) return next(new AppError(errMsg, statusCodes.not_found));
     req.cateringOrder = cateringOrder;
     return next();
+});
+
+exports.updateCateringOrder = catchAsync(async (req, res, next) => {
+    const { products, location,
+        paymentOption, cost,
+        description, occasion, date, } = req.body;
+    const obj = {};
+    if (products) obj.products = products;
+    if (location) obj.location = location;
+    if (paymentOption) obj.paymentOption = paymentOption;
+    if (cost) obj.cost = cost;
+    if (description) obj.description = description;
+    if (occasion) obj.occasion = occasion;
+    if (date) obj.date = date;
+
+    const updatedCateringOrder = await CateringOrder.findByIdAndUpdate(req.params.catering_order_id, obj, {
+        new: true,
+        runValidators: true
+    });
+
+    const message = "Successfully updated the catering order!";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, updatedCateringOrder);
 });

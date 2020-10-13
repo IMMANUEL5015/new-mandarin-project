@@ -32,4 +32,13 @@ router.get('/:catering_order_id',
     cateringOrdersMiddlewares.retrievedCateringOrder
 );
 
+router.patch('/:catering_order_id',
+    auth.protect,
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderOwnership,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrdersMiddlewares.calcTotalCost,
+    cateringOrder.updateCateringOrder
+);
+
 module.exports = router;

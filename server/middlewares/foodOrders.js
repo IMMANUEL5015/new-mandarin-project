@@ -45,7 +45,7 @@ exports.calcTotalCost = (req, res, next) => {
 exports.checkFoodOrderOwnership = (req, res, next) => {
     const foodOrder = req.foodOrder;
     if (req.user.role === "customer") {
-        if (!foodOrder.user.equals(req.user.id)) {
+        if (!foodOrder.customer.equals(req.user.id)) {
             const msg = 'You are forbidden from performing this action!';
             return next(new AppError(msg, statusCodes.forbidden));
         }

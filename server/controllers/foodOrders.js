@@ -10,7 +10,7 @@ const User = require('../models/user');
 exports.placeOrder = catchAsync(async (req, res, next) => {
     const msg = "You have successfully placed your order.";
     const newOrder = await FoodOrder.create({
-        user: req.user.id,
+        customer: req.user.id,
         products: req.body.products,
         cost: req.body.cost,
         deliveryAddress: req.body.deliveryAddress,
@@ -27,7 +27,7 @@ exports.seeAllFoodOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.seeMyFoodOrders = catchAsync(async (req, res, next) => {
-    req.query.user = req.user.id;
+    req.query.customer = req.user.id;
     const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved your food orders!";
     let totalExpenditure = orders.calcTotalAmount(all);
@@ -134,11 +134,6 @@ exports.canBeDelivered = catchAsync(async (req, res, next) => {
     let errMsg;
     const foodOrder = req.foodOrder;
 
-    if (!foodOrder.user.equals(req.user.id)) {
-        errMsg = 'You are forbidden from performing this action!';
-        return next(new AppError(errMsg, statusCodes.forbidden));
-    }
-
     if (foodOrder.paymentOption === 'online') {
         errMsg = 'You can only do this for food orders to be paid for upon delivery.';
         return next(new AppError(errMsg, statusCodes.bad_request));
@@ -168,7 +163,7 @@ exports.canBeDelivered = catchAsync(async (req, res, next) => {
 });
 
 exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
-    req.query.user = req.params.id;
+    req.query.customer = req.params.id;
     const all = await findMultiple(FoodOrder, req.query);
     const message = "Successfully retrieved the food orders!";
     let totalExpenditure = orders.calcTotalAmount(all);

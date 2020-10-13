@@ -32,7 +32,7 @@ exports.calcTotalCost = catchAsync(async (req, res, next) => {
 exports.checkCateringOrderOwnership = (req, res, next) => {
     const cateringOrder = req.cateringOrder;
     if (req.user.role === "customer") {
-        if (!cateringOrder.user.equals(req.user.id)) {
+        if (!cateringOrder.customer.equals(req.user.id)) {
             const msg = 'You are forbidden from performing this action!';
             return next(new AppError(msg, statusCodes.forbidden));
         }
@@ -44,4 +44,13 @@ exports.checkCateringOrderOwnership = (req, res, next) => {
 exports.retrievedCateringOrder = (req, res, next) => {
     const message = "Successfully retrieved the catering order!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, req.cateringOrder);
+}
+
+exports.checkIfCateringOrderCanBeModified = (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    if (cateringOrder.paid === "true" || cateringOrder.isDelivered === "true") {
+        const errMsg = "You cannot update or delete this catering order anymore!";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+    return next();
 }

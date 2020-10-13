@@ -72,6 +72,7 @@ router.patch('/:food_order_id/can-be-delivered',
     auth.protect,
     permissions.checkRole('developer', 'customer'),
     foodOrders.seeSpecificFoodOrder,
+    foodOrdersMiddlewares.checkFoodOrderOwnership,
     foodOrders.canBeDelivered
 );
 

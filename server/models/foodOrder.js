@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const foodOrderSchema = mongoose.Schema({
-    user: {
+    customer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
@@ -73,7 +73,7 @@ const foodOrderSchema = mongoose.Schema({
 
 foodOrderSchema.pre(/^find/, function (next) {
     this.populate({
-        path: 'user',
+        path: 'customer',
         select: 'name email role photo'
     }).populate({
         path: 'products.product',
