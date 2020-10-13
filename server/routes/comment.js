@@ -9,4 +9,9 @@ router.post('/', auth.protect,
     permissions.confirmRightToComment,
     comment.createComment);
 
+router.get('/', auth.protect,
+    cateringOrder.specificCateringOrder,
+    permissions.confirmRightToComment,
+    comment.seeAllComments);
+
 module.exports = router;
