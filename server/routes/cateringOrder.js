@@ -58,4 +58,10 @@ router.patch('/:catering_order_id/assign-handler',
     cateringOrder.assignSuperEmployee
 );
 
+router.get('/handler/my-catering-orders',
+    auth.protect,
+    permissions.checkRole('super-employee'),
+    cateringOrder.getHandlerCateringOrders
+);
+
 module.exports = router;

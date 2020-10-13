@@ -46,3 +46,13 @@ exports.deliveryfoodOrdersRes = (res, statusCode, message, total, data, totalDel
         data
     });
 }
+
+exports.handlerCateringOrdersRes = (res, statusCode, message, total, data, totalAmount) => {
+    return res.status(statusCode).json({
+        status: "Success",
+        totalAmount,
+        message,
+        total,
+        data
+    });
+}

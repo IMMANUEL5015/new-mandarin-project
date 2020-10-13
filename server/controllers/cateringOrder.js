@@ -104,3 +104,11 @@ exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
     let totalExpenditure = orders.calcTotalAmount(all);
     return responses.myOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
 });
+
+exports.getHandlerCateringOrders = catchAsync(async (req, res, next) => {
+    req.query.handler = req.user.id;
+    const all = await findMultiple(CateringOrder, req.query);
+    const msg = "Successfully retrieved the catering orders whose negotiations you need to handle!";
+    let totalAmount = orders.calcTotalAmount(all);
+    return responses.handlerCateringOrdersRes(res, statusCodes.ok, msg, all.length, all, totalAmount);
+});
