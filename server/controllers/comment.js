@@ -38,3 +38,8 @@ exports.updatepecificComment = catchAsync(async (req, res, next) => {
     const message = "Comment Updated!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, comment);
 });
+
+exports.deleteSpecificComment = catchAsync(async (req, res, next) => {
+    await Comment.findByIdAndDelete(req.params.comment_id);
+    return res.status(204).json();
+});

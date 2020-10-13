@@ -14,7 +14,7 @@ router.use('/api/v1/catering_orders', cateringOrderRoutes);
 router.use('/api/v1/users', userRoutes);
 
 router.all('*', (req, res, next) => {
-    return next(new AppError('The page you requested cannot be found!', 404));
+    return next(new AppError('The resource you requested cannot be found!', 404));
 });
 
 router.use(globalErrorHandler);

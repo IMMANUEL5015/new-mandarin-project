@@ -30,4 +30,12 @@ router.patch('/:comment_id',
     permissions.checkIfLoggedInUserWroteTheComment,
     comment.updatepecificComment);
 
+router.delete('/:comment_id',
+    auth.protect,
+    cateringOrder.specificCateringOrder,
+    commentMiddlewares.checkIfCateringOrderCanBeModified,
+    commentMiddlewares.findComment,
+    permissions.checkIfLoggedInUserWroteTheComment,
+    comment.deleteSpecificComment);
+
 module.exports = router;
