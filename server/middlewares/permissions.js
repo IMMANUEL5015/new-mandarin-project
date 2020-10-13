@@ -19,3 +19,14 @@ exports.checkUser = (req, res, next) => {
     }
     return next();
 }
+
+exports.confirmRightToComment = async (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+
+    if (cateringOrder.customer.equals(req.user.id) ||
+        cateringOrder.handler.equals(req.user.id)) {
+        return next();
+    }
+
+    return next(new AppError('You are forbidden from performing this action!', statusCodes.forbidden));
+}

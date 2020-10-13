@@ -4,6 +4,9 @@ const auth = require('../middlewares/auth');
 const permissions = require('../middlewares/permissions');
 const orders = require('../middlewares/orders');
 const cateringOrdersMiddlewares = require('../middlewares/cateringOrders');
+const commentRoutes = require('./comment');
+
+router.use('/:catering_order_id/comments', commentRoutes);
 
 
 router.post('/',
