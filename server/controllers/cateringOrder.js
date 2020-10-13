@@ -96,3 +96,11 @@ exports.assignSuperEmployee = catchAsync(async (req, res, next) => {
     const msg = `You have successfully assigned ${user.name} as the handler for this catering order.`;
     return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedCateringOrder);
 });
+
+exports.getCustomerFoodOrders = catchAsync(async (req, res, next) => {
+    req.query.customer = req.params.id;
+    const all = await findMultiple(CateringOrder, req.query);
+    const message = "Successfully retrieved the catering orders!";
+    let totalExpenditure = orders.calcTotalAmount(all);
+    return responses.myOrdersRes(res, statusCodes.ok, message, all.length, all, totalExpenditure);
+});

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const users = require('../controllers/users');
 const foodOrders = require('../controllers/foodOrders');
+const cateringOrder = require('../controllers/cateringOrder');
 const auth = require('../middlewares/auth');
 const permissions = require('../middlewares/permissions.js');
 
@@ -20,6 +21,12 @@ router.get('/:id/food-orders',
     auth.protect,
     permissions.checkUser,
     foodOrders.getCustomerFoodOrders
+);
+
+router.get('/:id/catering-orders',
+    auth.protect,
+    permissions.checkUser,
+    cateringOrder.getCustomerFoodOrders
 );
 
 router.patch('/available',
