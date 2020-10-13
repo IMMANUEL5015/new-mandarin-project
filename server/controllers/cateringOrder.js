@@ -68,3 +68,8 @@ exports.updateCateringOrder = catchAsync(async (req, res, next) => {
     const message = "Successfully updated the catering order!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, updatedCateringOrder);
 });
+
+exports.deleteCateringOrder = catchAsync(async (req, res, next) => {
+    await CateringOrder.findByIdAndDelete(req.params.catering_order_id);
+    return res.status(204).json();
+});

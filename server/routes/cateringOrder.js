@@ -41,4 +41,13 @@ router.patch('/:catering_order_id',
     cateringOrder.updateCateringOrder
 );
 
+router.delete('/:catering_order_id',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee', 'customer'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderOwnership,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrder.deleteCateringOrder
+);
+
 module.exports = router;
