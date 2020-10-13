@@ -1,4 +1,5 @@
 const CateringOrder = require('../models/cateringOrder');
+const User = require('../models/user');
 const catchAsync = require('../utilities/catchAsync');
 const responses = require('../utilities/responses');
 const statusCodes = require('../../statusCodes');
@@ -72,4 +73,26 @@ exports.updateCateringOrder = catchAsync(async (req, res, next) => {
 exports.deleteCateringOrder = catchAsync(async (req, res, next) => {
     await CateringOrder.findByIdAndDelete(req.params.catering_order_id);
     return res.status(204).json();
+});
+
+exports.assignSuperEmployee = catchAsync(async (req, res, next) => {
+    let errMsg;
+
+    const user = await User.findById(req.body.handler);
+    if (!user) {
+        errMsg = "The employee you want to assign to this catering order does not exist.";
+        return next(new AppError(errMsg, statusCodes.not_found));
+    }
+
+    if (!(user.role === 'super-employee')) {
+        errMsg = "The employee you want to assign to this catering order is not a top staff.";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+
+    const updatedCateringOrder = await CateringOrder.findByIdAndUpdate(req.params.catering_order_id, {
+        handler: req.body.handler
+    }, { new: true });
+
+    const msg = `You have successfully assigned ${user.name} as the handler for this catering order.`;
+    return responses.sendSuccessResponse(res, statusCodes.ok, msg, 1, updatedCateringOrder);
 });

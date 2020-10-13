@@ -50,4 +50,12 @@ router.delete('/:catering_order_id',
     cateringOrder.deleteCateringOrder
 );
 
+router.patch('/:catering_order_id/assign-handler',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrder.assignSuperEmployee
+);
+
 module.exports = router;
