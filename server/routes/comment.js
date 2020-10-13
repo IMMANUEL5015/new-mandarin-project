@@ -14,4 +14,9 @@ router.get('/', auth.protect,
     permissions.confirmRightToComment,
     comment.seeAllComments);
 
+router.get('/:comment_id', auth.protect,
+    cateringOrder.specificCateringOrder,
+    permissions.confirmRightToComment,
+    comment.seeSpecificComment);
+
 module.exports = router;

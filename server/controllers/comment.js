@@ -22,3 +22,11 @@ exports.seeAllComments = catchAsync(async (req, res, next) => {
     const message = "Successfully Retrieved All Comments!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, comments.length, comments);
 });
+
+exports.seeSpecificComment = catchAsync(async (req, res, next) => {
+    const comment = await Comment.findById(req.params.comment_id);
+    const errMsg = 'The comment you are looking for cannot be found!';
+    if (!comment) return next(new AppError(errMsg, statusCodes.not_found));
+    const message = "Retrieved Comment Successfully.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, comment);
+});

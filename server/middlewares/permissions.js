@@ -24,7 +24,10 @@ exports.confirmRightToComment = async (req, res, next) => {
     const cateringOrder = req.cateringOrder;
 
     if (cateringOrder.customer.equals(req.user.id) ||
-        cateringOrder.handler.equals(req.user.id)) {
+        cateringOrder.handler.equals(req.user.id) ||
+        req.user.role === "developer" ||
+        req.user.role === "manager" ||
+        req.user.role === "assistant-manager") {
         return next();
     }
 
