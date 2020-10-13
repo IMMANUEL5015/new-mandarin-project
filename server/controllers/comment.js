@@ -24,9 +24,17 @@ exports.seeAllComments = catchAsync(async (req, res, next) => {
 });
 
 exports.seeSpecificComment = catchAsync(async (req, res, next) => {
-    const comment = await Comment.findById(req.params.comment_id);
-    const errMsg = 'The comment you are looking for cannot be found!';
-    if (!comment) return next(new AppError(errMsg, statusCodes.not_found));
+    const comment = req.comment;
     const message = "Retrieved Comment Successfully.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, comment);
+});
+
+exports.updatepecificComment = catchAsync(async (req, res, next) => {
+    if (!req.body.text) return next(new AppError('Your comment must include a text.', 400));
+    const comment = await Comment.findByIdAndUpdate(req.params.comment_id, { text: req.body.text }, {
+        new: true,
+        runValidators: true
+    });
+    const message = "Comment Updated!";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, comment);
 });

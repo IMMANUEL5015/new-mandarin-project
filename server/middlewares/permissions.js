@@ -33,3 +33,10 @@ exports.confirmRightToComment = async (req, res, next) => {
 
     return next(new AppError('You are forbidden from performing this action!', statusCodes.forbidden));
 }
+
+exports.checkIfLoggedInUserWroteTheComment = (req, res, next) => {
+    const comment = req.comment;
+    if (comment.user.equals(req.user.id)) return next();
+
+    return next(new AppError('You are forbidden from performing this action', 403));
+}

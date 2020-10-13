@@ -40,7 +40,7 @@ exports.seeMyCateringOrders = catchAsync(async (req, res, next) => {
 });
 
 exports.specificCateringOrder = catchAsync(async (req, res, next) => {
-    const errMsg = 'The catering order you are looking for does not exist.';
+    const errMsg = 'The catering order does not exist.';
     const cateringOrder = await CateringOrder.findById(req.params.catering_order_id);
 
     if (!cateringOrder) return next(new AppError(errMsg, statusCodes.not_found));
