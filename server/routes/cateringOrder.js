@@ -5,6 +5,7 @@ const permissions = require('../middlewares/permissions');
 const orders = require('../middlewares/orders');
 const cateringOrdersMiddlewares = require('../middlewares/cateringOrders');
 const commentRoutes = require('./comment');
+const fileUpload = require('../middlewares/fileUpload');
 
 router.use('/:catering_order_id/comments', commentRoutes);
 
@@ -84,6 +85,18 @@ router.delete('/:catering_order_id/decline-catering-order',
     cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
     cateringOrdersMiddlewares.checkForAcceptance,
     cateringOrder.deleteCateringOrder
+);
+
+router.patch('/:catering_order_id/upload-payment-evidence',
+    auth.protect,
+    permissions.checkRole('customer'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderOwnership,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrdersMiddlewares.ensureAcceptance,
+    fileUpload.uploadPhoto,
+    fileUpload.resizePhoto,
+    cateringOrder.submitPaymentEvidence
 );
 
 module.exports = router;

@@ -126,3 +126,12 @@ exports.acceptCateringOrder = catchAsync(async (req, res, next) => {
     const message = "You have accepted this catering order!";
     return responses.sendSuccessResponse(res, statusCodes.created, message, 1, acceptCateringOrder);
 });
+
+exports.submitPaymentEvidence = catchAsync(async (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    const obj = { photo: req.body.photo, photoId: req.body.photoId };
+    cateringOrder.evidenceOfPayment.push(obj);
+    const result = await cateringOrder.save();
+    const message = "You have successfully updated your payment evidence.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, result);
+});

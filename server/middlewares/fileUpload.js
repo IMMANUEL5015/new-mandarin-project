@@ -35,7 +35,7 @@ const upload = multer({
 
 exports.uploadPhoto = upload.single('photo');
 
-exports.resizePhotoForProductCreate = catchAsync(async (req, res, next) => {
+exports.resizePhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
     const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });

@@ -62,3 +62,13 @@ exports.checkForAcceptance = (req, res, next) => {
     req.cateringOrder = cateringOrder;
     return next();
 }
+
+exports.ensureAcceptance = (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    if (!cateringOrder.acceptanceId) {
+        const errMsg = "You cannot pay for and upload evidence for a catering order that has not yet been accepted!";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+    req.cateringOrder = cateringOrder;
+    return next();
+}

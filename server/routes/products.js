@@ -16,7 +16,7 @@ router.post('/',
     auth.protect,
     permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
     fileUpload.uploadPhoto,
-    fileUpload.resizePhotoForProductCreate,
+    fileUpload.resizePhoto,
     products.addNewProduct
 );
 
