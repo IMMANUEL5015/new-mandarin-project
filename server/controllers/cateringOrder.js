@@ -149,3 +149,14 @@ exports.markAsPaid = catchAsync(async (req, res, next) => {
     const message = "You have certified that this catering order has been paid for.";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, result);
 });
+
+exports.markAsDelivered = catchAsync(async (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+
+    cateringOrder.isDelivered = "true";
+    cateringOrder.isPending = "false";
+    const result = await cateringOrder.save();
+
+    const message = "You have certified that this catering order has been delivered to the customer.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, result);
+});

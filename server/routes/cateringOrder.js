@@ -108,4 +108,14 @@ router.patch('/:catering_order_id/paid',
     cateringOrder.markAsPaid
 );
 
+router.patch('/:catering_order_id/delivered',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderHandler,
+    cateringOrdersMiddlewares.checkIfCateringOrderHasBeenPaidFor,
+    cateringOrdersMiddlewares.checkIfCateringOrderHasAlreadyBeenDelivered,
+    cateringOrder.markAsDelivered
+);
+
 module.exports = router;

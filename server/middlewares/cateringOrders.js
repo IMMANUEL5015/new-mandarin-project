@@ -53,6 +53,27 @@ exports.checkIfCateringOrderCanBeModified = (req, res, next) => {
     return next();
 }
 
+exports.checkIfCateringOrderHasBeenPaidFor = (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    if (!(cateringOrder.paid === "true") || cateringOrder.paid === "false") {
+        const errMsg = "This catering order has not been paid for.";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+    req.cateringOrder = cateringOrder;
+    return next();
+}
+
+exports.checkIfCateringOrderHasAlreadyBeenDelivered = (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    if (cateringOrder.isDelivered === "true") {
+        const errMsg = "You cannot perform any operation on this catering order anymore!";
+        return next(new AppError(errMsg, statusCodes.bad_request));
+    }
+    req.cateringOrder = cateringOrder;
+    return next();
+}
+
+
 exports.checkForAcceptance = (req, res, next) => {
     const cateringOrder = req.cateringOrder;
     if (cateringOrder.acceptanceId) {
