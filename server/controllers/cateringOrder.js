@@ -135,3 +135,17 @@ exports.submitPaymentEvidence = catchAsync(async (req, res, next) => {
     const message = "You have successfully updated your payment evidence.";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, result);
 });
+
+exports.markAsPaid = catchAsync(async (req, res, next) => {
+    const cateringOrder = req.cateringOrder;
+    const evidence = cateringOrder.evidenceOfPayment[0];
+    if (!evidence || !evidence.photo || !evidence.photoId) {
+        return next(new AppError('The customer has not yet uploaded an evidence of payment.', 400));
+    }
+
+    cateringOrder.paid = "true";
+    const result = await cateringOrder.save();
+
+    const message = "You have certified that this catering order has been paid for.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, result);
+});

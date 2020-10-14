@@ -99,4 +99,13 @@ router.patch('/:catering_order_id/upload-payment-evidence',
     cateringOrder.submitPaymentEvidence
 );
 
+router.patch('/:catering_order_id/paid',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderHandler,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrder.markAsPaid
+);
+
 module.exports = router;
