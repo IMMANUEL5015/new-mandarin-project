@@ -11,6 +11,8 @@ router.get('/',
     users.getAllUsers
 );
 
+router.get('/my-data', auth.protect, users.seeMyData);
+
 router.get('/:id',
     auth.protect,
     permissions.checkUser,

@@ -34,3 +34,8 @@ exports.unAvailable = catchAsync(async (req, res, next) => {
     const message = 'You are unavailable for assignment to food deliveries.'
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
 });
+
+exports.seeMyData = catchAsync(async (req, res, next) => {
+    const message = "Successfully retrieved your personal details.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, req.user);
+});
