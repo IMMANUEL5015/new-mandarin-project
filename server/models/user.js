@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
+const cloudinary = require('cloudinary');
+
+cloudinary.config({
+    cloud_name: 'immanueldiai',
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -60,6 +68,11 @@ const userSchema = mongoose.Schema({
         type: String,
         enum: ['available', 'unavailable'],
         default: 'available'
+    },
+    isActive: {
+        type: Boolean,
+        default: true,
+        enum: [true, false]
     }
 });
 
@@ -87,5 +100,14 @@ userSchema.methods.passwordHasChangedSinceTokenWasIssued = function (jwtTimeStam
     }
     return false;
 }
+
+userSchema.pre(/^findOneAndDelete/, async function (next) {
+    this.user = await this.findOne();
+    next();
+});
+
+userSchema.post(/^findOneAndDelete/, async function () {
+    if (this.user.photoId) await cloudinary.v2.uploader.destroy(this.user.photoId);
+});
 
 module.exports = User = mongoose.model('User', userSchema);

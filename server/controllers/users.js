@@ -51,3 +51,8 @@ exports.updateMyData = catchAsync(async (req, res, next) => {
     const message = "Successfully updated your personal information.";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
 });
+
+exports.deleteMyData = catchAsync(async (req, res, next) => {
+    await User.findByIdAndUpdate(req.user.id, { isActive: false }, { new: true });
+    return res.status(204).json();
+});

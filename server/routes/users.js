@@ -18,6 +18,9 @@ router.patch('/my-data', auth.protect,
     fileUpload.resizePhotoForUserUpdate,
     users.updateMyData);
 
+router.delete('/my-data', auth.protect, users.deleteMyData);
+
+
 router.get('/:id',
     auth.protect,
     permissions.checkUser,
