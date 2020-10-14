@@ -58,3 +58,14 @@ exports.resizePhotoForProductUpdate = catchAsync(async (req, res, next) => {
     req.body.photoId = result.public_id;
     return next();
 });
+
+exports.resizePhotoForUserUpdate = catchAsync(async (req, res, next) => {
+    if (!req.file) return next();
+
+    if (req.user.photoId) await cloudinary.v2.uploader.destroy(req.user.photoId);
+
+    const result = await cloudinary.v2.uploader.upload(req.file.path, { width: 500, height: 500 });
+    req.body.photo = result.secure_url;
+    req.body.photoId = result.public_id;
+    return next();
+});

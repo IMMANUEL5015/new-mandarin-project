@@ -39,3 +39,15 @@ exports.seeMyData = catchAsync(async (req, res, next) => {
     const message = "Successfully retrieved your personal details.";
     return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, req.user);
 });
+
+exports.updateMyData = catchAsync(async (req, res, next) => {
+    const obj = {};
+    if (req.body.name) obj.name = req.body.name;
+    if (req.body.photo) obj.photo = req.body.photo;
+    if (req.body.photoId) obj.photoId = req.body.photoId;
+
+    const user = await User.findByIdAndUpdate(req.user._id, obj, { new: true });
+
+    const message = "Successfully updated your personal information.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
+});

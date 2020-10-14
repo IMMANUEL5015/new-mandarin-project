@@ -4,6 +4,7 @@ const foodOrders = require('../controllers/foodOrders');
 const cateringOrder = require('../controllers/cateringOrder');
 const auth = require('../middlewares/auth');
 const permissions = require('../middlewares/permissions.js');
+const fileUpload = require('../middlewares/fileUpload');
 
 router.get('/',
     auth.protect,
@@ -12,6 +13,10 @@ router.get('/',
 );
 
 router.get('/my-data', auth.protect, users.seeMyData);
+router.patch('/my-data', auth.protect,
+    fileUpload.uploadPhoto,
+    fileUpload.resizePhotoForUserUpdate,
+    users.updateMyData);
 
 router.get('/:id',
     auth.protect,
