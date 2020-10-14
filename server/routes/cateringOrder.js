@@ -13,7 +13,6 @@ router.post('/',
     auth.protect,
     permissions.checkRole('customer'),
     orders.ensureThatThereAreProducts,
-    cateringOrdersMiddlewares.calcTotalCost,
     cateringOrder.placeOrder
 );
 
@@ -40,7 +39,6 @@ router.patch('/:catering_order_id',
     cateringOrder.specificCateringOrder,
     cateringOrdersMiddlewares.checkCateringOrderOwnership,
     cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
-    cateringOrdersMiddlewares.calcTotalCost,
     cateringOrder.updateCateringOrder
 );
 
@@ -65,6 +63,17 @@ router.get('/handler/my-catering-orders',
     auth.protect,
     permissions.checkRole('super-employee'),
     cateringOrder.getHandlerCateringOrders
+);
+
+router.patch('/:catering_order_id/accept-catering-order',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderHandler,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrdersMiddlewares.checkForAcceptance,
+    cateringOrdersMiddlewares.calcTotalCost,
+    cateringOrder.acceptCateringOrder
 );
 
 module.exports = router;

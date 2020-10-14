@@ -1,4 +1,5 @@
 const CateringOrder = require('../models/cateringOrder');
+const AcceptCatering = require('../models/acceptCatering');
 const User = require('../models/user');
 const catchAsync = require('../utilities/catchAsync');
 const responses = require('../utilities/responses');
@@ -15,7 +16,6 @@ exports.placeOrder = catchAsync(async (req, res, next) => {
         location: req.body.location,
         date: new Date(req.body.date),
         products: req.body.products,
-        cost: req.body.cost,
         paymentOption: req.body.paymentOption
     });
 
@@ -56,7 +56,6 @@ exports.updateCateringOrder = catchAsync(async (req, res, next) => {
     if (products) obj.products = products;
     if (location) obj.location = location;
     if (paymentOption) obj.paymentOption = paymentOption;
-    if (cost) obj.cost = cost;
     if (description) obj.description = description;
     if (occasion) obj.occasion = occasion;
     if (date) obj.date = date;
@@ -111,4 +110,19 @@ exports.getHandlerCateringOrders = catchAsync(async (req, res, next) => {
     const msg = "Successfully retrieved the catering orders whose negotiations you need to handle!";
     let totalAmount = orders.calcTotalAmount(all);
     return responses.handlerCateringOrdersRes(res, statusCodes.ok, msg, all.length, all, totalAmount);
+});
+
+exports.acceptCateringOrder = catchAsync(async (req, res, next) => {
+    const obj = { ...req.body };
+    obj.cateringOrder = req.params.catering_order_id;
+
+    const acceptCateringOrder = await AcceptCatering.create(obj);
+    const cateringOrder = req.cateringOrder;
+
+    cateringOrder.acceptanceId = acceptCateringOrder.id;
+    cateringOrder.cost = obj.finalCost;
+    await cateringOrder.save();
+
+    const message = "You have accepted this catering order!";
+    return responses.sendSuccessResponse(res, statusCodes.created, message, 1, acceptCateringOrder);
 });

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const cateringOrderSchema = mongoose.Schema({
+    acceptanceId: { type: mongoose.Schema.Types.ObjectId, ref: 'AcceptCatering' },
     customer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -39,7 +40,8 @@ const cateringOrderSchema = mongoose.Schema({
         }
     ],
     cost: {
-        type: Number
+        type: Number,
+        default: 0
     },
     createdAt: {
         type: Date,
@@ -72,14 +74,6 @@ const cateringOrderSchema = mongoose.Schema({
         type: String,
         default: "true"
     },
-    transportCost: {
-        type: Number,
-        default: process.env.CATERING_ORDER_TRANSPORT_COST
-    },
-    servingCost: {
-        type: Number,
-        default: process.env.SERVING_COST
-    },
     handler: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -96,7 +90,7 @@ cateringOrderSchema.pre(/^find/, function (next) {
     }).populate({
         path: 'handler',
         select: 'name email role photo'
-    });
+    }).populate('acceptanceId');
     next();
 });
 
