@@ -76,4 +76,14 @@ router.patch('/:catering_order_id/accept-catering-order',
     cateringOrder.acceptCateringOrder
 );
 
+router.delete('/:catering_order_id/decline-catering-order',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager', 'super-employee'),
+    cateringOrder.specificCateringOrder,
+    cateringOrdersMiddlewares.checkCateringOrderHandler,
+    cateringOrdersMiddlewares.checkIfCateringOrderCanBeModified,
+    cateringOrdersMiddlewares.checkForAcceptance,
+    cateringOrder.deleteCateringOrder
+);
+
 module.exports = router;

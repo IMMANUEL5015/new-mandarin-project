@@ -56,7 +56,7 @@ exports.checkIfCateringOrderCanBeModified = (req, res, next) => {
 exports.checkForAcceptance = (req, res, next) => {
     const cateringOrder = req.cateringOrder;
     if (cateringOrder.acceptanceId) {
-        const errMsg = "You cannot accept a catering order that has already been accpeted!";
+        const errMsg = "You cannot accept or decline a catering order that has already been accpeted!";
         return next(new AppError(errMsg, statusCodes.bad_request));
     }
     req.cateringOrder = cateringOrder;
