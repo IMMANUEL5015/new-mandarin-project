@@ -50,6 +50,9 @@ exports.protect = catchAsync(async (req, res, next) => {
         return next(new AppError('Your password changed recently. Please login again.', statusCodes.unAuthenticated));
     }
 
+    const msg = 'You deactivated your account. Please reactivate your account first.'
+    if (!user.isActive) return next(new AppError(msg, statusCodes.unAuthenticated));
+
     req.user = user;
     return next();
 });

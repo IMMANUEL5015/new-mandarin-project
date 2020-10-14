@@ -31,6 +31,10 @@ exports.login = catchAsync(async (req, res, next) => {
     }
 
     const user = await User.findOne({ email }).select("+password");
+
+    const msg = 'You deactivated your account. Please reactivate your account first.'
+    if (!user.isActive) return next(new AppError(msg, statusCodes.unAuthenticated));
+
     req.user = user;
     next();
 });
