@@ -69,3 +69,18 @@ exports.reactivateAccount = catchAsync(async (req, res, next) => {
 
     return responses.sendSuccessResponse(res, 200, 'Successful Reactivation!', 1, user);
 });
+
+exports.changeUserRole = catchAsync(async (req, res, next) => {
+    const { role } = req.body;
+    if (!role) return next(new AppError('Please provide the new role of this user.', 400));
+
+    const user = await User.findByIdAndUpdate(req.params.id, { role }, {
+        new: true,
+        runValidators: true
+    });
+
+    if (!user) return next(new AppError('This user does not exist!', 404));
+
+    const message = "You have successfully updated the role of this user.";
+    return responses.sendSuccessResponse(res, statusCodes.ok, message, 1, user);
+});

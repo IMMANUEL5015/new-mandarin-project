@@ -39,6 +39,12 @@ router.get('/:id/catering-orders',
     cateringOrder.getCustomerFoodOrders
 );
 
+router.patch('/:id/change-user-role',
+    auth.protect,
+    permissions.checkRole('developer', 'manager', 'assistant-manager'),
+    users.changeUserRole);
+
+
 router.patch('/available',
     auth.protect,
     permissions.checkRole('delivery-agent'),
