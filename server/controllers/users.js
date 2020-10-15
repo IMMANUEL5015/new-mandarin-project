@@ -56,3 +56,16 @@ exports.deleteMyData = catchAsync(async (req, res, next) => {
     await User.findByIdAndUpdate(req.user.id, { isActive: false }, { new: true });
     return res.status(204).json();
 });
+
+exports.reactivateAccount = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) return next(new AppError('Please provide the email address you used in registering.', 400));
+
+    const user = await User.findOne({ email });
+    if (!user) return next(new AppError('There is no user with the email address you provided.', 404));
+
+    user.isActive = true;
+    await user.save({ validateBeforeSave: false });
+
+    return responses.sendSuccessResponse(res, 200, 'Successful Reactivation!', 1, user);
+});

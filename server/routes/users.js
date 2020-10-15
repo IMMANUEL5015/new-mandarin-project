@@ -19,7 +19,7 @@ router.patch('/my-data', auth.protect,
     users.updateMyData);
 
 router.delete('/my-data', auth.protect, users.deleteMyData);
-
+router.patch('/reactivate-account', users.reactivateAccount);
 
 router.get('/:id',
     auth.protect,
